@@ -1,0 +1,7 @@
+---
+- name: Download runc
+  tags: download
+  become: false
+  run_once: true
+  delegate_to: localhost
+  ansible.builtin.import_tasks: download.yml

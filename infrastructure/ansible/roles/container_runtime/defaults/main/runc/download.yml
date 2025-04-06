@@ -1,0 +1,6 @@
+---
+# Version of runc to download. Can be a specific version (e.g., "1.1.12") or "latest".
+container_runtime_runc_download_version: latest
+
+# URL to download the runc binary, constructed from GitHub user, repository, version, and architecture.
+container_runtime_runc_download_url: "https://github.com/{{ container_runtime_runc_download_github_user }}/{{ container_runtime_runc_download_github_repository }}/releases/download/v{{ container_runtime_runc_download_version }}/runc.{{ container_runtime_runc_download_architecture }}"

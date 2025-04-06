@@ -1,0 +1,41 @@
+---
+- name: Get latest runc version
+  when: container_runtime_runc_download_version == "latest"
+  block:
+    - name: Fetch latest runc release on GitHub
+      register: container_runtime_runc_download_github_release
+      community.general.github_release:
+        user: "{{ container_runtime_runc_download_github_user }}"
+        repo: "{{ container_runtime_runc_download_github_repository }}"
+        action: latest_release
+
+    - name: Set runc version fact
+      ansible.builtin.set_fact:
+        container_runtime_runc_download_version: "{{ container_runtime_runc_download_github_release.tag | regex_replace('^v', '') }}"
+
+- name: Download runc binaries
+  block:
+    - name: Create version directory
+      ansible.builtin.file:
+        path: "{{ (container_runtime_runc_download_dir, container_runtime_runc_download_version) | ansible.builtin.path_join }}"
+        mode: "0755"
+        state: directory
+
+    - name: Check if the runc binaries already downloaded
+      loop: "{{ container_runtime_runc_download_architecture_map.values() }}"
+      register: container_runtime_runc_download_files
+      loop_control:
+        loop_var: container_runtime_runc_download_architecture
+      ansible.builtin.stat:
+        path: "{{ (container_runtime_runc_download_dir, container_runtime_runc_download_version, container_runtime_runc_download_architecture) | ansible.builtin.path_join }}"
+
+    - name: Download runc archives
+      when: not container_runtime_runc_download_files.results[ansible_loop.index0].stat.exists
+      loop: "{{ container_runtime_runc_download_architecture_map.values() }}"
+      loop_control:
+        extended: true
+        loop_var: container_runtime_runc_download_architecture
+      ansible.builtin.get_url:
+        url: "{{ container_runtime_runc_download_url }}"
+        dest: "{{ (container_runtime_runc_download_dir, container_runtime_runc_download_version, container_runtime_runc_download_architecture) | ansible.builtin.path_join }}"
+        mode: "0644"

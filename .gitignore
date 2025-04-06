@@ -1,6 +1,14 @@
 # Vagrant
 .vagrant/
 
+# Python
+.venv/
+
+# Ansible
+.ansible/
+.download/
+inventories/
+
 # IDE
 .idea/
 .vscode/
