@@ -1,0 +1,33 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+require "yaml"
+
+# Load configuration from YAML file. (default: ./config.yml or ENV override)
+settings = YAML.load_file(ENV["VAGRANT_CONFIG"] || "./config.yml")
+
+Vagrant.configure("2") do |config|
+  # Set the base box for all virtual machines.
+  config.vm.box = settings["box"]
+
+  # Set global provider-specific configuration.
+  config.vm.provider "libvirt" do |domain|
+    domain.cpus   = settings["domain"]["cores"]
+    domain.memory = settings["domain"]["memory"]
+
+    domain.forward_ssh_port = true
+  end
+
+  # Create multiple nodes based on the count from config.
+  (1..settings["nodes"]).each do |index|
+    node_name = "node-#{index.to_s.rjust(2, '0')}"
+
+    config.vm.define node_name do |node|
+      node.vm.network "forwarded_port",
+                      id: "ssh",
+                      host:  settings["network"]["ports"]["ssh"]["host"] + index,
+                      guest: settings["network"]["ports"]["ssh"]["guest"],
+                      protocol: "tcp"
+    end
+  end
+end
