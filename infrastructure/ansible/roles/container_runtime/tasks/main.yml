@@ -1,3 +1,3 @@
 ---
-- name: Install runc
+- name: Setup runc
   ansible.builtin.import_tasks: runc/main.yml
