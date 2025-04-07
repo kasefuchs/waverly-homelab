@@ -5,3 +5,7 @@
   run_once: true
   delegate_to: localhost
   ansible.builtin.import_tasks: download.yml
+
+- name: Install runc
+  tags: install
+  ansible.builtin.import_tasks: install.yml

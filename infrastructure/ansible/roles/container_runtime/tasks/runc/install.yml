@@ -1,0 +1,6 @@
+---
+- name: Install runc binary
+  ansible.builtin.copy:
+    src: "{{ container_runtime_runc_install_binary_local_file }}"
+    dest: "{{ container_runtime_runc_install_binary_file }}"
+    mode: "0644"

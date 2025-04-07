@@ -1,0 +1,6 @@
+---
+# Local path to the downloaded runc binary for the current architecture.
+container_runtime_runc_install_binary_local_file: "{{ (container_runtime_runc_download_current_local_dir_link, ansible_architecture) | ansible.builtin.path_join }}"
+
+# Destination path on the target system where the runc binary will be installed.
+container_runtime_runc_install_binary_file: /usr/local/bin/runc

@@ -1,5 +1,6 @@
 ---
 - name: Setup Container Runtime
   hosts: all
+  become: true
   roles:
     - container_runtime
