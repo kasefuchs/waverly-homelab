@@ -1,0 +1,8 @@
+---
+- name: Create CNI plugins network configuration directory
+  ansible.builtin.file:
+    path: "{{ container_runtime_cni_plugins_config_network_dir }}"
+    mode: "0700"
+    state: directory
+    owner: root
+    group: root

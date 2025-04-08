@@ -1,0 +1,15 @@
+---
+- name: Download CNI plugins
+  tags: download
+  become: false
+  run_once: true
+  delegate_to: localhost
+  ansible.builtin.import_tasks: download.yml
+
+- name: Install CNI plugins
+  tags: install
+  ansible.builtin.import_tasks: install.yml
+
+- name: Configure CNI plugins
+  tags: config
+  ansible.builtin.import_tasks: config.yml

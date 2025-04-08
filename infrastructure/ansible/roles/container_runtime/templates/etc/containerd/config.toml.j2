@@ -1,0 +1,17 @@
+version = 3
+
+[plugins."io.containerd.cri.v1.images"]
+snapshotter = "overlayfs"
+
+[plugins."io.containerd.cri.v1.runtime".cni]
+bin_dirs = ["{{ container_runtime_containerd_config_cni_binaries_dir }}"]
+conf_dir = "{{ container_runtime_containerd_config_cni_network_config_dir }}"
+
+[plugins."io.containerd.cri.v1.runtime".containerd]
+default_runtime_name = "runc"
+
+[plugins."io.containerd.cri.v1.runtime".containerd.runtimes.runc]
+runtime_type = "io.containerd.runc.v2"
+
+  [plugins."io.containerd.cri.v1.runtime".containerd.runtimes.runc.options]
+  SystemdCgroup = true

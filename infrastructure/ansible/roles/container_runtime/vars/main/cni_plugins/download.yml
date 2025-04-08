@@ -1,0 +1,17 @@
+---
+# GitHub user or organization that maintains the CNI plugins repository.
+container_runtime_cni_plugins_download_github_user: containernetworking
+
+# GitHub repository name for CNI plugins.
+container_runtime_cni_plugins_download_github_repository: plugins
+
+# Mapping from system architecture to CNI plugins release architecture naming.
+container_runtime_cni_plugins_download_architecture_map:
+  x86_64: amd64
+  aarch64: arm64
+
+# Directory path where specific versions of CNI plugins will be downloaded.
+container_runtime_cni_plugins_download_version_local_dir: "{{ playbook_dir }}/../.download/{{ role_name }}/cni_plugins/version/"
+
+# Symlink path pointing to the currently used CNI plugins version.
+container_runtime_cni_plugins_download_current_local_dir_link: "{{ playbook_dir }}/../.download/{{ role_name }}/cni_plugins/current"

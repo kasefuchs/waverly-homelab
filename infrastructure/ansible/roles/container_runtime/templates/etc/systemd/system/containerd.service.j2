@@ -1,0 +1,22 @@
+[Unit]
+Description=containerd: Container runtime
+Wants=network.target local-fs.target modprobe@overlay.service
+After=network.target local-fs.target modprobe@overlay.service
+
+[Service]
+Type=notify
+ExecStart={{ container_runtime_containerd_service_binary_file }} --config={{ container_runtime_containerd_service_config_file }}
+
+Delegate=yes
+KillMode=process
+Restart=always
+RestartSec=5
+
+TasksMax=infinity
+OOMScoreAdjust=-999
+
+LimitNPROC=infinity
+LimitCORE=infinity
+
+[Install]
+WantedBy=multi-user.target

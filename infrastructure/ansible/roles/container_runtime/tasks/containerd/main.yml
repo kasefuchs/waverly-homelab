@@ -1,0 +1,19 @@
+---
+- name: Download containerd
+  tags: download
+  become: false
+  run_once: true
+  delegate_to: localhost
+  ansible.builtin.import_tasks: download.yml
+
+- name: Install containerd
+  tags: install
+  ansible.builtin.import_tasks: install.yml
+
+- name: Configure containerd
+  tags: config
+  ansible.builtin.import_tasks: config.yml
+
+- name: Install containerd service
+  tags: service
+  ansible.builtin.import_tasks: service.yml

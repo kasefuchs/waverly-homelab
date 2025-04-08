@@ -1,0 +1,10 @@
+---
+# Local path to the downloaded containerd binaries archive for the current architecture.
+container_runtime_containerd_install_binaries_archive_local_file: "{{ (container_runtime_containerd_download_current_local_dir_link, ansible_architecture) | ansible.builtin.path_join }}"
+
+# Destination path on the target system where the containerd will be installed.
+container_runtime_containerd_install_binaries_archive_extract_dir: /usr/local/bin/
+
+# Additional options for extracting the containerd archive.
+container_runtime_containerd_install_binaries_archive_unarchive_extra_opts:
+  [--strip-components=1, bin]

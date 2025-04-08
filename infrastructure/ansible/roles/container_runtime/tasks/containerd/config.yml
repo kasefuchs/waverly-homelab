@@ -1,0 +1,16 @@
+---
+- name: Create containerd configuration directory
+  ansible.builtin.file:
+    path: "{{ container_runtime_containerd_config_dir }}"
+    mode: "0755"
+    state: directory
+    owner: root
+    group: root
+
+- name: Render containerd configuration template
+  ansible.builtin.template:
+    src: etc/containerd/config.toml.j2
+    dest: "{{ container_runtime_containerd_config_file }}"
+    mode: "0644"
+    owner: root
+    group: root

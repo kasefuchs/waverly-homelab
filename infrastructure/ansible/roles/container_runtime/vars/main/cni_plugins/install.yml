@@ -1,0 +1,9 @@
+---
+# Local path to the downloaded CNI plugins binaries archive for the current architecture.
+container_runtime_cni_plugins_install_binaries_archive_local_file: "{{ (container_runtime_cni_plugins_download_current_local_dir_link, ansible_architecture) | ansible.builtin.path_join }}"
+
+# Destination path on the target system where the CNI plugins will be installed.
+container_runtime_cni_plugins_install_binaries_archive_extract_dir: /opt/cni/bin/
+
+# Additional options for extracting the CNI plugins archive.
+container_runtime_cni_plugins_install_binaries_archive_unarchive_extra_opts: []

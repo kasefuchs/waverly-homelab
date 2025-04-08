@@ -1,3 +1,12 @@
 ---
 - name: Setup runc
+  tags: runc
   ansible.builtin.import_tasks: runc/main.yml
+
+- name: Setup CNI plugins
+  tags: cni_plugins
+  ansible.builtin.import_tasks: cni_plugins/main.yml
+
+- name: Setup containerd
+  tags: containerd
+  ansible.builtin.import_tasks: containerd/main.yml

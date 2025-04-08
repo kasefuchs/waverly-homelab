@@ -1,0 +1,17 @@
+---
+- name: Create containerd binaries directory
+  ansible.builtin.file:
+    path: "{{ container_runtime_containerd_install_binaries_archive_extract_dir }}"
+    mode: "0755"
+    state: directory
+    owner: root
+    group: root
+
+- name: Unarchive containerd binaries
+  ansible.builtin.unarchive:
+    src: "{{ container_runtime_containerd_install_binaries_archive_local_file }}"
+    dest: "{{ container_runtime_containerd_install_binaries_archive_extract_dir }}"
+    mode: "0755"
+    owner: root
+    group: root
+    extra_opts: "{{ container_runtime_containerd_install_binaries_archive_unarchive_extra_opts }}"

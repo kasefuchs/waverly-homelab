@@ -1,0 +1,12 @@
+---
+# Directory where containerd configuration files will be stored.
+container_runtime_containerd_config_dir: /etc/containerd/
+
+# Full path to the main containerd configuration file.
+container_runtime_containerd_config_file: "{{ (container_runtime_containerd_config_dir, 'config.toml') | ansible.builtin.path_join }}"
+
+# Directory where containerd expects to find CNI plugin binaries.
+container_runtime_containerd_config_cni_binaries_dir: "{{ container_runtime_cni_plugins_install_binaries_archive_extract_dir }}"
+
+# Directory where containerd expects to find CNI network configuration files.
+container_runtime_containerd_config_cni_network_config_dir: "{{ container_runtime_cni_plugins_config_network_dir }}"
