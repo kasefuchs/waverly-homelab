@@ -1,0 +1,6 @@
+---
+- name: Setup Nebula
+  hosts: all
+  become: true
+  roles:
+    - nebula

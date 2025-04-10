@@ -1,0 +1,25 @@
+---
+- name: Download Nebula
+  tags: download
+  become: false
+  run_once: true
+  delegate_to: localhost
+  ansible.builtin.import_tasks: download.yml
+
+- name: Install Nebula
+  tags: install
+  ansible.builtin.import_tasks: install.yml
+
+- name: Create Nebula certificates
+  tags: pki
+  become: false
+  delegate_to: localhost
+  ansible.builtin.import_tasks: pki.yml
+
+- name: Configure Nebula
+  tags: config
+  ansible.builtin.import_tasks: config.yml
+
+- name: Install Nebula service
+  tags: service
+  ansible.builtin.import_tasks: service.yml

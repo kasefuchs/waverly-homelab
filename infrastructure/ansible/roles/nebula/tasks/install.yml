@@ -1,0 +1,17 @@
+---
+- name: Create Nebula binaries directory
+  ansible.builtin.file:
+    path: "{{ nebula_install_binaries_archive_extract_dir }}"
+    mode: "0755"
+    state: directory
+    owner: root
+    group: root
+
+- name: Unarchive Nebula binaries
+  ansible.builtin.unarchive:
+    src: "{{ nebula_install_binaries_archive_local_file }}"
+    dest: "{{ nebula_install_binaries_archive_extract_dir }}"
+    mode: "0755"
+    owner: root
+    group: root
+    extra_opts: "{{ nebula_install_binaries_archive_unarchive_extra_opts }}"

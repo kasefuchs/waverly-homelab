@@ -1,3 +1,5 @@
+{{ ansible_managed | ansible.builtin.comment }}
+
 [Unit]
 Description=containerd: Container runtime
 Wants=network.target local-fs.target modprobe@overlay.service

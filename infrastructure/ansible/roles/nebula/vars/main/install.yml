@@ -1,0 +1,9 @@
+---
+# Local path to the downloaded Nebula binaries archive for the current architecture.
+nebula_install_binaries_archive_local_file: "{{ (nebula_download_current_local_dir_link, ansible_architecture) | ansible.builtin.path_join }}"
+
+# Destination path on the target system where the Nebula will be installed.
+nebula_install_binaries_archive_extract_dir: /usr/local/bin/
+
+# Additional options for extracting the Nebula archive.
+nebula_install_binaries_archive_unarchive_extra_opts: []

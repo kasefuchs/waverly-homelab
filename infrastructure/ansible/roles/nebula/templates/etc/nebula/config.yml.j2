@@ -1,0 +1,16 @@
+{{ ansible_managed | ansible.builtin.comment }}
+---
+{{ 
+  {
+    "pki": nebula_config_pki,
+    "listen": nebula_config_listen,
+    "lighthouse": nebula_config_lighthouse,
+    "punchy": nebula_config_punchy,
+    "relay": nebula_config_relay,
+    "tun": nebula_config_tun,
+    "firewall": nebula_config_firewall,
+    "static_host_map": nebula_static_host_map
+  }
+  | ansible.builtin.to_nice_yaml(indent=2)
+  | trim
+}}

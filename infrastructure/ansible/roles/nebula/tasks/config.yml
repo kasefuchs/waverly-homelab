@@ -1,0 +1,47 @@
+---
+- name: Create Nebula configuration directory
+  ansible.builtin.file:
+    path: "{{ nebula_config_dir }}"
+    mode: "0755"
+    state: directory
+    owner: root
+    group: root
+
+- name: Create Nebula PKI directory
+  ansible.builtin.file:
+    path: "{{ nebula_config_pki_dir }}"
+    mode: "0700"
+    state: directory
+    owner: root
+    group: root
+
+- name: Copy Nebula PKI certificates
+  loop:
+    - label: CA certificate
+      src: "{{ (nebula_pki_ca_local_dir, 'ca.crt') | ansible.builtin.path_join }}"
+      dest: "{{ (nebula_config_pki_dir, 'ca.crt') | ansible.builtin.path_join }}"
+      mode: "0644"
+    - label: Host certificate
+      src: "{{ (nebula_pki_entity_local_dir, inventory_hostname, 'host.crt') | ansible.builtin.path_join }}"
+      dest: "{{ (nebula_config_pki_dir, 'host.crt') | ansible.builtin.path_join }}"
+      mode: "0644"
+    - label: Host private key
+      src: "{{ (nebula_pki_entity_local_dir, inventory_hostname, 'host.key') | ansible.builtin.path_join }}"
+      dest: "{{ (nebula_config_pki_dir, 'host.key') | ansible.builtin.path_join }}"
+      mode: "0600"
+  loop_control:
+    label: "{{ item.label }}"
+  ansible.builtin.copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: "{{ item.mode }}"
+    owner: root
+    group: root
+
+- name: Render Nebula configuration template
+  ansible.builtin.template:
+    src: etc/nebula/config.yml.j2
+    dest: "{{ nebula_config_file }}"
+    mode: "0644"
+    owner: root
+    group: root
