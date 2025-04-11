@@ -14,4 +14,5 @@
     mode: "0755"
     owner: root
     group: root
-    extra_opts: "{{ nebula_install_binaries_archive_unarchive_extra_opts }}"
+    exclude: "{{ nebula_install_binaries_unarchive_exclude }}"
+    extra_opts: "{{ nebula_install_binaries_unarchive_options }}"
