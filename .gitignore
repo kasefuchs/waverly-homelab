@@ -7,7 +7,7 @@
 # Ansible
 .ansible/
 .download/
-.pki/
+.certs/
 inventories/
 
 # IDE

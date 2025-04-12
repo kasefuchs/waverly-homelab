@@ -1,0 +1,6 @@
+---
+- name: Setup etcd
+  hosts: all
+  become: true
+  roles:
+    - etcd

@@ -8,7 +8,6 @@
     group: root
 
 - name: Render containerd configuration template
-  notify: Restart containerd service
   ansible.builtin.template:
     src: etc/containerd/config.toml.j2
     dest: "{{ container_runtime_containerd_config_file }}"

@@ -12,6 +12,7 @@
 
 - name: Configure containerd
   tags: config
+  notify: Restart containerd service
   ansible.builtin.import_tasks: config.yml
 
 - name: Install containerd service

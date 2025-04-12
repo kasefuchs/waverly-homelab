@@ -5,11 +5,11 @@ nebula_config_dir: /etc/nebula/
 # Full path to the main Nebula configuration file.
 nebula_config_file: "{{ (nebula_config_dir, 'config.yml') | ansible.builtin.path_join }}"
 
-# Directory where Nebula PKI files will be stored in the config path.
-nebula_config_pki_dir: "{{ (nebula_config_dir, 'pki') | ansible.builtin.path_join }}"
+# Directory where Nebula certificate files will be stored in the config path.
+nebula_config_cert_dir: "{{ (nebula_config_dir, 'certs') | ansible.builtin.path_join }}"
 
-# Paths to Nebula's PKI files (CA, certificate, and key).
+# Paths to Nebula's certificate files (CA, certificate, and key).
 nebula_config_pki:
-  ca: "{{ (nebula_config_pki_dir, 'ca.crt') | ansible.builtin.path_join }}"
-  key: "{{ (nebula_config_pki_dir, 'host.key') | ansible.builtin.path_join }}"
-  cert: "{{ (nebula_config_pki_dir, 'host.crt') | ansible.builtin.path_join }}"
+  ca: "{{ (nebula_config_cert_dir, 'ca.crt') | ansible.builtin.path_join }}"
+  key: "{{ (nebula_config_cert_dir, 'host.key') | ansible.builtin.path_join }}"
+  cert: "{{ (nebula_config_cert_dir, 'host.crt') | ansible.builtin.path_join }}"

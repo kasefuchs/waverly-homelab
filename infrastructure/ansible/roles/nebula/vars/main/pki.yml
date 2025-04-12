@@ -1,9 +1,0 @@
----
-# Base local directory for storing Nebula PKI assets.
-nebula_pki_local_dir: "{{ playbook_dir }}/../.pki/{{ role_name }}/{{ inventory_dir | ansible.builtin.basename }}"
-
-# Directory for storing Nebula CA files.
-nebula_pki_ca_local_dir: "{{ (nebula_pki_local_dir, 'ca') | ansible.builtin.path_join }}"
-
-# Directory for storing Nebula entity (host) certificate and key files.
-nebula_pki_entity_local_dir: "{{ (nebula_pki_local_dir, 'entity') | ansible.builtin.path_join }}"
