@@ -1,0 +1,40 @@
+---
+- name: Create directories
+  loop:
+    - "{{ kubernetes_cert_ca_local_dir }}"
+    - "{{ kubernetes_cert_entity_local_dir }}"
+  run_once: true
+  ansible.builtin.file:
+    path: "{{ item }}"
+    mode: "0700"
+    state: directory
+
+- name: Create CA certificate
+  run_once: true
+  block:
+    - name: Create CA private key
+      register: kubernetes_cert_ca_private_key
+      community.crypto.openssl_privatekey:
+        path: "{{ (kubernetes_cert_ca_local_dir, 'ca.key') | ansible.builtin.path_join }}"
+
+    - name: Create CA certificate signing request
+      register: kubernetes_cert_ca_csr
+      community.crypto.openssl_csr:
+        path: "{{ (kubernetes_cert_ca_local_dir, 'ca.csr') | ansible.builtin.path_join }}"
+        privatekey_path: "{{ kubernetes_cert_ca_private_key.filename }}"
+        subject: "{{ kubernetes_cert_ca_subject }}"
+        use_common_name_for_san: false
+        key_usage: [keyCertSign]
+        key_usage_critical: true
+        basic_constraints: [CA:TRUE]
+        basic_constraints_critical: true
+
+    - name: Create CA certificate from CSR
+      register: kubernetes_cert_ca_certificate
+      community.crypto.x509_certificate:
+        path: "{{ (kubernetes_cert_ca_local_dir, 'ca.crt') | ansible.builtin.path_join }}"
+        csr_path: "{{ kubernetes_cert_ca_csr.filename }}"
+        privatekey_path: "{{ kubernetes_cert_ca_private_key.filename }}"
+        provider: selfsigned
+        ownca_not_after: "+{{ kubernetes_cert_ca_duration }}"
+        ownca_not_before: "-1d"

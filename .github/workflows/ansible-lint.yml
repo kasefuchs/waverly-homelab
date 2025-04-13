@@ -19,7 +19,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  publish:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

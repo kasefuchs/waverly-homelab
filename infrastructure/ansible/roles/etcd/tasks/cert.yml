@@ -22,7 +22,7 @@
       community.crypto.openssl_csr:
         path: "{{ (etcd_cert_ca_local_dir, 'ca.csr') | ansible.builtin.path_join }}"
         privatekey_path: "{{ etcd_cert_ca_private_key.filename }}"
-        common_name: "{{ etcd_cert_ca_cn }}"
+        subject: "{{ etcd_cert_ca_subject }}"
         use_common_name_for_san: false
         key_usage: [keyCertSign]
         key_usage_critical: true
@@ -40,20 +40,21 @@
         ownca_not_before: "-1d"
 
 - name: Create client certificate
+  run_once: true
   block:
     - name: Create client private key
+      register: etcd_cert_entity_client_private_key
       community.crypto.openssl_privatekey:
         path: "{{ (etcd_cert_entity_local_dir, 'client.key') | ansible.builtin.path_join }}"
-      register: etcd_cert_entity_client_private_key
 
     - name: Create client certificate signing request
+      register: etcd_cert_entity_client_csr
       community.crypto.openssl_csr:
         path: "{{ (etcd_cert_entity_local_dir, 'client.csr') | ansible.builtin.path_join }}"
         privatekey_path: "{{ etcd_cert_entity_client_private_key.filename }}"
-        common_name: "{{ etcd_cert_entity_client_cn }}"
+        subject: "{{ etcd_cert_entity_client_subject }}"
         subject_alt_name: "{{ etcd_cert_entity_client_san }}"
         extended_key_usage: [serverAuth, clientAuth]
-      register: etcd_cert_entity_client_csr
 
     - name: Sign client certificate
       community.crypto.x509_certificate:
@@ -66,7 +67,6 @@
         ownca_not_before: "-1d"
 
 - name: Create entity certificates
-  tags: never
   block:
     - name: Create host certificate directory
       ansible.builtin.file:
@@ -86,7 +86,7 @@
           community.crypto.openssl_csr:
             path: "{{ (etcd_cert_entity_local_dir, inventory_hostname, 'server.csr') | ansible.builtin.path_join }}"
             privatekey_path: "{{ etcd_cert_entity_server_private_key.filename }}"
-            common_name: "{{ etcd_cert_entity_server_cn }}"
+            subject: "{{ etcd_cert_entity_server_subject }}"
             subject_alt_name: "{{ etcd_cert_entity_server_san }}"
             extended_key_usage: [serverAuth, clientAuth]
 
@@ -112,7 +112,7 @@
           community.crypto.openssl_csr:
             path: "{{ (etcd_cert_entity_local_dir, inventory_hostname, 'peer.csr') | ansible.builtin.path_join }}"
             privatekey_path: "{{ etcd_cert_entity_peer_private_key.filename }}"
-            common_name: "{{ etcd_cert_entity_peer_cn }}"
+            subject: "{{ etcd_cert_entity_peer_subject }}"
             subject_alt_name: "{{ etcd_cert_entity_peer_san }}"
             extended_key_usage: [serverAuth, clientAuth]
 

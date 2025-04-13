@@ -1,12 +1,14 @@
 ---
-# Common Name for the etcd Certificate Authority.
-etcd_cert_ca_cn: Waverly etcd CA
+# Subject details for the etcd CA certificate.
+etcd_cert_ca_subject:
+  CN: Waverly etcd CA
 
-# Duration of CA certificate validity.
+# Duration of etcd CA certificate validity.
 etcd_cert_ca_duration: 3650d
 
-# Common Name for the etcd client certificate.
-etcd_cert_entity_client_cn: client.etcd
+# Subject details for the etcd client certificate.
+etcd_cert_entity_client_subject:
+  CN: client.etcd
 
 # Subject Alternative Names for the etcd client certificate.
 etcd_cert_entity_client_san:
@@ -14,11 +16,12 @@ etcd_cert_entity_client_san:
   - IP:127.0.0.1
   - DNS:localhost
 
-# Duration of the etcd client certificate validity.
+# Duration of etcd client certificate validity.
 etcd_cert_entity_client_duration: 1825d
 
-# Common Name for the etcd server certificate.
-etcd_cert_entity_server_cn: server.etcd
+# Subject details for the etcd server certificate.
+etcd_cert_entity_server_subject:
+  CN: server.etcd
 
 # Subject Alternative Names for the etcd server certificate.
 etcd_cert_entity_server_san:
@@ -26,15 +29,16 @@ etcd_cert_entity_server_san:
   - IP:127.0.0.1
   - DNS:localhost
 
-  # Node
+  # Node-specific
   - "IP:{{ nebula_cert_entity_host_ip | ansible.utils.ipaddr('address') }}"
   - "DNS:{{ etcd_config_member_name }}.server.etcd"
 
-# Duration of the etcd server certificate validity.
+# Duration of etcd server certificate validity.
 etcd_cert_entity_server_duration: 1825d
 
-# Common Name for the etcd peer certificate.
-etcd_cert_entity_peer_cn: peer.etcd
+# Subject details for the etcd peer certificate.
+etcd_cert_entity_peer_subject:
+  CN: peer.etcd
 
 # Subject Alternative Names for the etcd peer certificate.
 etcd_cert_entity_peer_san:
@@ -42,9 +46,9 @@ etcd_cert_entity_peer_san:
   - IP:127.0.0.1
   - DNS:localhost
 
-  # Node
+  # Node-specific
   - "IP:{{ nebula_cert_entity_host_ip | ansible.utils.ipaddr('address') }}"
   - "DNS:{{ etcd_config_member_name }}.peer.etcd"
 
-# Duration of the etcd peer certificate validity.
+# Duration of etcd peer certificate validity.
 etcd_cert_entity_peer_duration: 1825d

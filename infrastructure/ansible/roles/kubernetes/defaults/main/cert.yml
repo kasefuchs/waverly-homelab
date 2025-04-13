@@ -1,0 +1,7 @@
+---
+# Subject details for the Kubernetes CA certificate.
+kubernetes_cert_ca_subject:
+  CN: Waverly Kubernetes CA
+
+# Duration of CA certificate validity.
+kubernetes_cert_ca_duration: 3650d
