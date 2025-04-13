@@ -3,14 +3,14 @@
 {{ 
   {
     "pki": nebula_config_pki,
-    "listen": nebula_config_listen,
+    "static_host_map": nebula_static_host_map,
     "lighthouse": nebula_config_lighthouse,
+    "listen": nebula_config_listen,
     "punchy": nebula_config_punchy,
     "relay": nebula_config_relay,
     "tun": nebula_config_tun,
-    "firewall": nebula_config_firewall,
-    "static_host_map": nebula_static_host_map
+    "firewall": nebula_config_firewall
   }
-  | ansible.builtin.to_nice_yaml(indent=2)
+  | ansible.builtin.to_nice_yaml(indent=2, sort_keys=False)
   | trim
 }}

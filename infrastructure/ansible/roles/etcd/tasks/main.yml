@@ -1,0 +1,26 @@
+---
+- name: Download etcd
+  tags: download
+  become: false
+  run_once: true
+  delegate_to: localhost
+  ansible.builtin.import_tasks: download.yml
+
+- name: Install etcd
+  tags: install
+  ansible.builtin.import_tasks: install.yml
+
+- name: Create etcd certificates
+  tags: cert
+  become: false
+  delegate_to: localhost
+  ansible.builtin.import_tasks: cert.yml
+
+- name: Configure etcd
+  tags: config
+  notify: Restart etcd service
+  ansible.builtin.import_tasks: config.yml
+
+- name: Install etcd service
+  tags: service
+  ansible.builtin.import_tasks: service.yml

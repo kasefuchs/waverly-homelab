@@ -1,0 +1,127 @@
+---
+- name: Create directories
+  loop:
+    - "{{ etcd_cert_ca_local_dir }}"
+    - "{{ etcd_cert_entity_local_dir }}"
+  run_once: true
+  ansible.builtin.file:
+    path: "{{ item }}"
+    mode: "0700"
+    state: directory
+
+- name: Create CA certificate
+  run_once: true
+  block:
+    - name: Create CA private key
+      register: etcd_cert_ca_private_key
+      community.crypto.openssl_privatekey:
+        path: "{{ (etcd_cert_ca_local_dir, 'ca.key') | ansible.builtin.path_join }}"
+
+    - name: Create CA certificate signing request
+      register: etcd_cert_ca_csr
+      community.crypto.openssl_csr:
+        path: "{{ (etcd_cert_ca_local_dir, 'ca.csr') | ansible.builtin.path_join }}"
+        privatekey_path: "{{ etcd_cert_ca_private_key.filename }}"
+        common_name: "{{ etcd_cert_ca_cn }}"
+        use_common_name_for_san: false
+        key_usage: [keyCertSign]
+        key_usage_critical: true
+        basic_constraints: [CA:TRUE]
+        basic_constraints_critical: true
+
+    - name: Create CA certificate from CSR
+      register: etcd_cert_ca_certificate
+      community.crypto.x509_certificate:
+        path: "{{ (etcd_cert_ca_local_dir, 'ca.crt') | ansible.builtin.path_join }}"
+        csr_path: "{{ etcd_cert_ca_csr.filename }}"
+        privatekey_path: "{{ etcd_cert_ca_private_key.filename }}"
+        provider: selfsigned
+        ownca_not_after: "+{{ etcd_cert_ca_duration }}"
+        ownca_not_before: "-1d"
+
+- name: Create client certificate
+  block:
+    - name: Create client private key
+      community.crypto.openssl_privatekey:
+        path: "{{ (etcd_cert_entity_local_dir, 'client.key') | ansible.builtin.path_join }}"
+      register: etcd_cert_entity_client_private_key
+
+    - name: Create client certificate signing request
+      community.crypto.openssl_csr:
+        path: "{{ (etcd_cert_entity_local_dir, 'client.csr') | ansible.builtin.path_join }}"
+        privatekey_path: "{{ etcd_cert_entity_client_private_key.filename }}"
+        common_name: "{{ etcd_cert_entity_client_cn }}"
+        subject_alt_name: "{{ etcd_cert_entity_client_san }}"
+        extended_key_usage: [serverAuth, clientAuth]
+      register: etcd_cert_entity_client_csr
+
+    - name: Sign client certificate
+      community.crypto.x509_certificate:
+        path: "{{ (etcd_cert_entity_local_dir, 'client.crt') | ansible.builtin.path_join }}"
+        provider: ownca
+        csr_path: "{{ etcd_cert_entity_client_csr.filename }}"
+        ownca_path: "{{ etcd_cert_ca_certificate.filename }}"
+        ownca_privatekey_path: "{{ etcd_cert_ca_private_key.filename }}"
+        ownca_not_after: "+{{ etcd_cert_entity_client_duration }}"
+        ownca_not_before: "-1d"
+
+- name: Create entity certificates
+  tags: never
+  block:
+    - name: Create host certificate directory
+      ansible.builtin.file:
+        mode: "0700"
+        path: "{{ (etcd_cert_entity_local_dir, inventory_hostname) | ansible.builtin.path_join }}"
+        state: directory
+
+    - name: Create server certificates
+      block:
+        - name: Create server private key
+          register: etcd_cert_entity_server_private_key
+          community.crypto.openssl_privatekey:
+            path: "{{ (etcd_cert_entity_local_dir, inventory_hostname, 'server.key') | ansible.builtin.path_join }}"
+
+        - name: Create server certificate signing request
+          register: etcd_cert_entity_server_csr
+          community.crypto.openssl_csr:
+            path: "{{ (etcd_cert_entity_local_dir, inventory_hostname, 'server.csr') | ansible.builtin.path_join }}"
+            privatekey_path: "{{ etcd_cert_entity_server_private_key.filename }}"
+            common_name: "{{ etcd_cert_entity_server_cn }}"
+            subject_alt_name: "{{ etcd_cert_entity_server_san }}"
+            extended_key_usage: [serverAuth, clientAuth]
+
+        - name: Sign server certificate
+          community.crypto.x509_certificate:
+            path: "{{ (etcd_cert_entity_local_dir, inventory_hostname, 'server.crt') | ansible.builtin.path_join }}"
+            provider: ownca
+            csr_path: "{{ etcd_cert_entity_server_csr.filename }}"
+            ownca_path: "{{ etcd_cert_ca_certificate.filename }}"
+            ownca_privatekey_path: "{{ etcd_cert_ca_private_key.filename }}"
+            ownca_not_after: "+{{ etcd_cert_entity_server_duration }}"
+            ownca_not_before: "-1d"
+
+    - name: Create peer certificates
+      block:
+        - name: Create peer private key
+          register: etcd_cert_entity_peer_private_key
+          community.crypto.openssl_privatekey:
+            path: "{{ (etcd_cert_entity_local_dir, inventory_hostname, 'peer.key') | ansible.builtin.path_join }}"
+
+        - name: Create peer certificate signing request
+          register: etcd_cert_entity_peer_csr
+          community.crypto.openssl_csr:
+            path: "{{ (etcd_cert_entity_local_dir, inventory_hostname, 'peer.csr') | ansible.builtin.path_join }}"
+            privatekey_path: "{{ etcd_cert_entity_peer_private_key.filename }}"
+            common_name: "{{ etcd_cert_entity_peer_cn }}"
+            subject_alt_name: "{{ etcd_cert_entity_peer_san }}"
+            extended_key_usage: [serverAuth, clientAuth]
+
+        - name: Sign peer certificate
+          community.crypto.x509_certificate:
+            path: "{{ (etcd_cert_entity_local_dir, inventory_hostname, 'peer.crt') | ansible.builtin.path_join }}"
+            provider: ownca
+            csr_path: "{{ etcd_cert_entity_peer_csr.filename }}"
+            ownca_path: "{{ etcd_cert_ca_certificate.filename }}"
+            ownca_privatekey_path: "{{ etcd_cert_ca_private_key.filename }}"
+            ownca_not_after: "+{{ etcd_cert_entity_peer_duration }}"
+            ownca_not_before: "-1d"

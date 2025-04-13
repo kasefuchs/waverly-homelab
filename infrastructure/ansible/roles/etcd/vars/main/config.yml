@@ -1,0 +1,46 @@
+---
+#
+etcd_config_data_dir: /var/lib/etcd
+
+# Directory where etcd configuration files will be stored.
+etcd_config_dir: /etc/etcd/
+
+# Full path to the main etcd configuration file.
+etcd_config_file: "{{ (etcd_config_dir, 'etcd.conf.yml') | ansible.builtin.path_join }}"
+
+# Directory where etcd certificate files will be stored in the config path.
+etcd_config_cert_dir: "{{ (etcd_config_dir, 'certs') | ansible.builtin.path_join }}"
+
+# Directory where etcd TLS configuration for peer communication is defined.
+etcd_config_peer_tls:
+  # Path to the peer server TLS cert file.
+  cert-file: "{{ (etcd_config_cert_dir, 'peer.crt') | ansible.builtin.path_join }}"
+
+  # Path to the peer server TLS key file.
+  key-file: "{{ (etcd_config_cert_dir, 'peer.key') | ansible.builtin.path_join }}"
+
+  # Enable peer client cert authentication.
+  client-cert-auth: true
+
+  # Path to the trusted CA cert file for peers.
+  trusted-ca-file: "{{ (etcd_config_cert_dir, 'ca.crt') | ansible.builtin.path_join }}"
+
+  # Disable automatic peer TLS generation.
+  auto-tls: false
+
+# Directory where etcd TLS configuration for client communication is defined.
+etcd_config_client_tls:
+  # Path to the client server TLS cert file.
+  cert-file: "{{ (etcd_config_cert_dir, 'server.crt') | ansible.builtin.path_join }}"
+
+  # Path to the client server TLS key file.
+  key-file: "{{ (etcd_config_cert_dir, 'server.key') | ansible.builtin.path_join }}"
+
+  # Enable client cert authentication.
+  client-cert-auth: true
+
+  # Path to the trusted CA cert file for clients.
+  trusted-ca-file: "{{ (etcd_config_cert_dir, 'ca.crt') | ansible.builtin.path_join }}"
+
+  # Disable automatic client TLS generation.
+  auto-tls: false

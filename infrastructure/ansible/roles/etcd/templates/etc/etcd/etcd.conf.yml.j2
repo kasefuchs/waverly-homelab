@@ -1,0 +1,19 @@
+{{ ansible_managed | ansible.builtin.comment }}
+---
+{{ 
+  {
+    "name": etcd_config_member_name,
+    "data-dir": etcd_config_data_dir,
+    "listen-peer-urls": etcd_config_listen_peer_urls | join(","),
+    "listen-client-urls": etcd_config_listen_client_urls | join(","),
+    "initial-advertise-peer-urls": etcd_config_advertise_peer_urls | join(","),
+    "advertise-client-urls": etcd_config_advertise_client_urls | join(","),
+    "initial-cluster": etcd_config_cluster_members.items() | map("join", "=") | join(","),
+    "initial-cluster-token": etcd_config_cluster_token,
+    "initial-cluster-state": etcd_config_cluster_state,
+    "client-transport-security": etcd_config_client_tls,
+    "peer-transport-security": etcd_config_peer_tls
+  }
+  | ansible.builtin.to_nice_yaml(indent=2, sort_keys=False)
+  | trim
+}}

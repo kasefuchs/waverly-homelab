@@ -1,0 +1,51 @@
+---
+- name: Get latest etcd version
+  when: etcd_download_version == "latest"
+  block:
+    - name: Fetch latest etcd release on GitHub
+      register: etcd_download_github_release
+      community.general.github_release:
+        user: "{{ etcd_download_github_user }}"
+        repo: "{{ etcd_download_github_repository }}"
+        action: latest_release
+
+    - name: Set etcd version fact
+      ansible.builtin.set_fact:
+        etcd_download_version: "{{ etcd_download_github_release.tag | regex_replace('^v', '') }}"
+
+- name: Link current version directory
+  block:
+    - name: Create version directory
+      ansible.builtin.file:
+        path: "{{ (etcd_download_version_local_dir, etcd_download_version) | ansible.builtin.path_join }}"
+        mode: "0755"
+        state: directory
+
+    - name: Link current version directory
+      ansible.builtin.file:
+        src: "{{ (etcd_download_version_local_dir, etcd_download_version) | ansible.builtin.path_join }}"
+        dest: "{{ etcd_download_current_local_dir_link }}"
+        state: link
+
+- name: Download etcd binaries
+  block:
+    - name: Check if the etcd archives already downloaded
+      loop: "{{ etcd_download_architecture_map.items() }}"
+      register: etcd_download_files
+      loop_control:
+        label: "{{ etcd_download_architecture[0] }}"
+        loop_var: etcd_download_architecture
+      ansible.builtin.stat:
+        path: "{{ (etcd_download_current_local_dir_link, etcd_download_architecture[0]) | ansible.builtin.path_join }}"
+
+    - name: Download etcd archives
+      when: not etcd_download_files.results[ansible_loop.index0].stat.exists
+      loop: "{{ etcd_download_architecture_map.items() }}"
+      loop_control:
+        label: "{{ etcd_download_architecture[0] }}"
+        loop_var: etcd_download_architecture
+        extended: true
+      ansible.builtin.get_url:
+        url: "{{ etcd_download_url }}"
+        dest: "{{ (etcd_download_current_local_dir_link, etcd_download_architecture[0]) | ansible.builtin.path_join }}"
+        mode: "0644"

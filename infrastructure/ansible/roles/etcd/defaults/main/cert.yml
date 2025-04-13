@@ -1,0 +1,50 @@
+---
+# Common Name for the etcd Certificate Authority.
+etcd_cert_ca_cn: Waverly etcd CA
+
+# Duration of CA certificate validity.
+etcd_cert_ca_duration: 3650d
+
+# Common Name for the etcd client certificate.
+etcd_cert_entity_client_cn: client.etcd
+
+# Subject Alternative Names for the etcd client certificate.
+etcd_cert_entity_client_san:
+  # Local
+  - IP:127.0.0.1
+  - DNS:localhost
+
+# Duration of the etcd client certificate validity.
+etcd_cert_entity_client_duration: 1825d
+
+# Common Name for the etcd server certificate.
+etcd_cert_entity_server_cn: server.etcd
+
+# Subject Alternative Names for the etcd server certificate.
+etcd_cert_entity_server_san:
+  # Local
+  - IP:127.0.0.1
+  - DNS:localhost
+
+  # Node
+  - "IP:{{ nebula_cert_entity_host_ip | ansible.utils.ipaddr('address') }}"
+  - "DNS:{{ etcd_config_member_name }}.server.etcd"
+
+# Duration of the etcd server certificate validity.
+etcd_cert_entity_server_duration: 1825d
+
+# Common Name for the etcd peer certificate.
+etcd_cert_entity_peer_cn: peer.etcd
+
+# Subject Alternative Names for the etcd peer certificate.
+etcd_cert_entity_peer_san:
+  # Local
+  - IP:127.0.0.1
+  - DNS:localhost
+
+  # Node
+  - "IP:{{ nebula_cert_entity_host_ip | ansible.utils.ipaddr('address') }}"
+  - "DNS:{{ etcd_config_member_name }}.peer.etcd"
+
+# Duration of the etcd peer certificate validity.
+etcd_cert_entity_peer_duration: 1825d

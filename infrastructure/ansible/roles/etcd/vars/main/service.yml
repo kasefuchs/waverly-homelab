@@ -1,0 +1,6 @@
+---
+# Path to the etcd service binary.
+etcd_service_binary_file: "{{ (etcd_install_binaries_archive_extract_dir, 'etcd') | ansible.builtin.path_join }}"
+
+# Path to the etcd service configuration file.
+etcd_service_config_file: "{{ etcd_config_file }}"

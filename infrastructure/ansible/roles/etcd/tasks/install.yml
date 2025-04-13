@@ -1,0 +1,18 @@
+---
+- name: Create etcd binaries directory
+  ansible.builtin.file:
+    path: "{{ etcd_install_binaries_archive_extract_dir }}"
+    mode: "0755"
+    state: directory
+    owner: root
+    group: root
+
+- name: Unarchive etcd binaries
+  ansible.builtin.unarchive:
+    src: "{{ etcd_install_binaries_archive_local_file }}"
+    dest: "{{ etcd_install_binaries_archive_extract_dir }}"
+    mode: "0755"
+    owner: root
+    group: root
+    exclude: "{{ etcd_install_binaries_unarchive_exclude }}"
+    extra_opts: "{{ etcd_install_binaries_unarchive_options }}"

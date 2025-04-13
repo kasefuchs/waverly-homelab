@@ -1,0 +1,22 @@
+{{ ansible_managed | ansible.builtin.comment }}
+
+[Unit]
+Description=etcd: Distributed key-value store
+Wants=network.target local-fs.target nebula.service
+After=network.target local-fs.target nebula.service
+
+[Service]
+Type=notify
+ExecStart={{ etcd_service_binary_file }} --config-file={{ etcd_service_config_file }}
+
+NotifyAccess=main
+SyslogIdentifier=etcd
+
+KillMode=process
+Restart=always
+RestartSec=5
+
+LimitNOFILE=infinity
+
+[Install]
+WantedBy=multi-user.target

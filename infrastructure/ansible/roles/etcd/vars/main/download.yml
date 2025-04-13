@@ -1,0 +1,17 @@
+---
+# GitHub user or organization that maintains the etcd repository.
+etcd_download_github_user: etcd-io
+
+# GitHub repository name for etcd.
+etcd_download_github_repository: etcd
+
+# Mapping from system architecture to etcd release architecture naming.
+etcd_download_architecture_map:
+  x86_64: amd64
+  aarch64: arm64
+
+# Directory path where specific versions of etcd will be downloaded.
+etcd_download_version_local_dir: "{{ playbook_dir }}/../.download/{{ role_name }}/version/"
+
+# Symlink path pointing to the currently used etcd version.
+etcd_download_current_local_dir_link: "{{ playbook_dir }}/../.download/{{ role_name }}/current"

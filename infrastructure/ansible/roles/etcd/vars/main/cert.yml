@@ -1,0 +1,9 @@
+---
+# Base local directory for storing etcd certificates.
+etcd_cert_local_dir: "{{ playbook_dir }}/../.certs/{{ role_name }}/{{ inventory_dir | ansible.builtin.basename }}"
+
+# Directory for storing etcd CA files.
+etcd_cert_ca_local_dir: "{{ (etcd_cert_local_dir, 'ca') | ansible.builtin.path_join }}"
+
+# Directory for storing etcd entity (host) certificate and key files.
+etcd_cert_entity_local_dir: "{{ (etcd_cert_local_dir, 'entity') | ansible.builtin.path_join }}"

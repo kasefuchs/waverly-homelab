@@ -1,0 +1,25 @@
+---
+# Name of the etcd cluster member (defaults to the inventory hostname).
+etcd_config_member_name: "{{ inventory_hostname }}"
+
+# List of peer URLs etcd listens on.
+etcd_config_listen_peer_urls:
+  - "https://{{ nebula_cert_entity_host_ip | ansible.utils.ipaddr('address') }}:2380"
+
+# List of client URLs etcd listens on.
+etcd_config_listen_client_urls:
+  - "https://{{ nebula_cert_entity_host_ip | ansible.utils.ipaddr('address') }}:2379"
+
+# List of peer URLs to advertise to other members.
+etcd_config_advertise_peer_urls:
+  - "https://{{ nebula_cert_entity_host_ip | ansible.utils.ipaddr('address') }}:2380"
+
+# List of client URLs to advertise to clients.
+etcd_config_advertise_client_urls:
+  - "https://{{ nebula_cert_entity_host_ip | ansible.utils.ipaddr('address') }}:2379"
+
+# Initial etcd cluster state (e.g., 'new' or 'existing').
+etcd_config_cluster_state: new
+
+# Token used to identify the etcd cluster.
+etcd_config_cluster_token: waverly
