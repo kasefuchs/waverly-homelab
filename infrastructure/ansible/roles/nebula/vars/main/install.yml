@@ -8,5 +8,5 @@ nebula_install_binaries_archive_extract_dir: /usr/local/bin/
 # Additional options for extracting the Nebula archive.
 nebula_install_binaries_unarchive_options: []
 
-# List of file or directory patterns to exclude when extracting the archive.
-nebula_install_binaries_unarchive_exclude: []
+# List of file or directory patterns to include when extracting the archive.
+nebula_install_binaries_unarchive_include: [nebula]

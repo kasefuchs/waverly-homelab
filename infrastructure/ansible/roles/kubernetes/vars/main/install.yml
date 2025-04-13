@@ -1,0 +1,17 @@
+---
+# Local path to the downloaded Kubernetes binaries archive for the current architecture.
+kubernetes_install_binaries_archive_local_file: "{{ (kubernetes_download_current_local_dir_link, ansible_architecture) | ansible.builtin.path_join }}"
+
+# Destination path on the target system where the Kubernetes will be installed.
+kubernetes_install_binaries_archive_extract_dir: /usr/local/bin/
+
+# Additional options for extracting the Kubernetes archive.
+kubernetes_install_binaries_unarchive_options: [--strip-components=3]
+
+# List of file or directory patterns to include when extracting the archive.
+kubernetes_install_binaries_unarchive_include:
+  - kubernetes/server/bin/kube-apiserver
+  - kubernetes/server/bin/kube-controller-manager
+  - kubernetes/server/bin/kube-proxy
+  - kubernetes/server/bin/kube-scheduler
+  - kubernetes/server/bin/kubelet

@@ -1,0 +1,18 @@
+---
+- name: Create Kubernetes binaries directory
+  ansible.builtin.file:
+    path: "{{ kubernetes_install_binaries_archive_extract_dir }}"
+    mode: "0755"
+    state: directory
+    owner: root
+    group: root
+
+- name: Unarchive Kubernetes binaries
+  ansible.builtin.unarchive:
+    src: "{{ kubernetes_install_binaries_archive_local_file }}"
+    dest: "{{ kubernetes_install_binaries_archive_extract_dir }}"
+    mode: "0755"
+    owner: root
+    group: root
+    include: "{{ kubernetes_install_binaries_unarchive_include }}"
+    extra_opts: "{{ kubernetes_install_binaries_unarchive_options }}"

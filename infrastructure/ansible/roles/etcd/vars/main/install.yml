@@ -8,8 +8,5 @@ etcd_install_binaries_archive_extract_dir: /usr/local/bin/
 # Additional options for extracting the etcd archive.
 etcd_install_binaries_unarchive_options: [--strip-components=1]
 
-# List of file or directory patterns to exclude when extracting the archive.
-etcd_install_binaries_unarchive_exclude:
-  - README*
-  - Documentation
-  - Documentation/*
+# List of file or directory patterns to include when extracting the archive.
+etcd_install_binaries_unarchive_include: [etcd]

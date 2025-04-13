@@ -14,5 +14,5 @@
     mode: "0755"
     owner: root
     group: root
-    exclude: "{{ container_runtime_containerd_install_binaries_unarchive_exclude }}"
+    include: "{{ container_runtime_containerd_install_binaries_unarchive_include }}"
     extra_opts: "{{ container_runtime_containerd_install_binaries_unarchive_options }}"

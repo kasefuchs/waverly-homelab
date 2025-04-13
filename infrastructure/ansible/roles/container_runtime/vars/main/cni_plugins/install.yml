@@ -8,7 +8,23 @@ container_runtime_cni_plugins_install_binaries_archive_extract_dir: /opt/cni/bin
 # Additional options for extracting the CNI plugins archive.
 container_runtime_cni_plugins_install_binaries_unarchive_options: []
 
-# List of file or directory patterns to exclude when extracting the archive.
-container_runtime_cni_plugins_install_binaries_unarchive_exclude:
-  - README.md
-  - LICENSE
+# List of file or directory patterns to include when extracting the archive.
+container_runtime_cni_plugins_install_binaries_unarchive_include:
+  - ./bandwidth
+  - ./bridge
+  - ./dhcp
+  - ./dummy
+  - ./firewall
+  - ./host-device
+  - ./host-local
+  - ./ipvlan
+  - ./loopback
+  - ./macvlan
+  - ./portmap
+  - ./ptp
+  - ./sbr
+  - ./static
+  - ./tap
+  - ./tuning
+  - ./vlan
+  - ./vrf

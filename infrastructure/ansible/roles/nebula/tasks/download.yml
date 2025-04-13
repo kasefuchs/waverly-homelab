@@ -11,7 +11,7 @@
 
     - name: Set Nebula version fact
       ansible.builtin.set_fact:
-        nebula_download_version: "{{ nebula_download_github_release.tag | regex_replace('^v', '') }}"
+        nebula_download_version: "{{ nebula_download_github_release.tag | ansible.builtin.regex_replace('^v', '') }}"
 
 - name: Link current version directory
   block:

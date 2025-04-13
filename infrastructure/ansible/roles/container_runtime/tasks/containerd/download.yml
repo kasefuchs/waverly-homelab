@@ -11,7 +11,7 @@
 
     - name: Set containerd version fact
       ansible.builtin.set_fact:
-        container_runtime_containerd_download_version: "{{ container_runtime_containerd_download_github_release.tag | regex_replace('^v', '') }}"
+        container_runtime_containerd_download_version: "{{ container_runtime_containerd_download_github_release.tag | ansible.builtin.regex_replace('^v', '') }}"
 
 - name: Link current version directory
   block:

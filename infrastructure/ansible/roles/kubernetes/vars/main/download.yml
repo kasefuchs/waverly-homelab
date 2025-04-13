@@ -1,0 +1,17 @@
+---
+# GitHub user or organization that maintains the Kubernetes repository.
+kubernetes_download_github_user: kubernetes
+
+# GitHub repository name for kubernetes.
+kubernetes_download_github_repository: kubernetes
+
+# Mapping from system architecture to Kubernetes release architecture naming.
+kubernetes_download_architecture_map:
+  x86_64: amd64
+  aarch64: arm64
+
+# Directory path where specific versions of Kubernetes will be downloaded.
+kubernetes_download_version_local_dir: "{{ playbook_dir }}/../.download/{{ role_name }}/version/"
+
+# Symlink path pointing to the currently used Kubernetes version.
+kubernetes_download_current_local_dir_link: "{{ playbook_dir }}/../.download/{{ role_name }}/current"

@@ -14,5 +14,5 @@
     mode: "0755"
     owner: root
     group: root
-    exclude: "{{ etcd_install_binaries_unarchive_exclude }}"
+    include: "{{ etcd_install_binaries_unarchive_include }}"
     extra_opts: "{{ etcd_install_binaries_unarchive_options }}"

@@ -11,7 +11,7 @@
 
     - name: Set etcd version fact
       ansible.builtin.set_fact:
-        etcd_download_version: "{{ etcd_download_github_release.tag | regex_replace('^v', '') }}"
+        etcd_download_version: "{{ etcd_download_github_release.tag | ansible.builtin.regex_replace('^v', '') }}"
 
 - name: Link current version directory
   block:

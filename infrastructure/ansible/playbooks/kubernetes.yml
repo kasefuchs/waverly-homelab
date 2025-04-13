@@ -1,0 +1,6 @@
+---
+- name: Setup Kubernetes
+  hosts: all
+  become: true
+  roles:
+    - kubernetes
