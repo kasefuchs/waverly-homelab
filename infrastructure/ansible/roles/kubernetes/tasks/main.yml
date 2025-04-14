@@ -15,3 +15,7 @@
   become: false
   delegate_to: localhost
   ansible.builtin.import_tasks: cert.yml
+
+- name: Setup Kubernetes API server
+  tags: api_server
+  ansible.builtin.import_tasks: api_server/main.yml

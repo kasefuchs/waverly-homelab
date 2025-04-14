@@ -1,0 +1,3 @@
+---
+# Directory for storing Kubernetes API server entity (host) certificate and key files.
+kubernetes_api_server_cert_entity_local_dir: "{{ (kubernetes_cert_entity_local_dir, 'api_server') | ansible.builtin.path_join }}"

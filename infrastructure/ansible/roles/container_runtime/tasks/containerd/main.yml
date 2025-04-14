@@ -17,4 +17,8 @@
 
 - name: Install containerd service
   tags: service
+  notify:
+    - Reload SystemD daemon
+    - Enable containerd service
+    - Restart containerd service
   ansible.builtin.import_tasks: service.yml

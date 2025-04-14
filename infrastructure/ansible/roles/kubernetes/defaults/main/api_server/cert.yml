@@ -1,0 +1,23 @@
+---
+# Subject details for the Kubernetes API server certificate.
+kubernetes_api_server_cert_entity_subject:
+  CN: kubernetes
+
+# Subject Alternative Names for the Kubernetes API server certificate.
+kubernetes_api_server_cert_entity_san:
+  # Local
+  - IP:127.0.0.1
+  - DNS:localhost
+
+  # Node
+  - "IP:{{ nebula_cert_entity_host_ip | ansible.utils.ipaddr('address') }}"
+
+  # DNS
+  - DNS:kubernetes
+  - DNS:kubernetes.default
+  - DNS:kubernetes.default.svc
+  - DNS:kubernetes.default.svc.cluster
+  - DNS:kubernetes.default.svc.cluster.local
+
+# Duration of Kubernetes API server certificate validity.
+kubernetes_api_server_cert_entity_duration: 1825d

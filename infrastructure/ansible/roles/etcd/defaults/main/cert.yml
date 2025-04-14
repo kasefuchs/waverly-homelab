@@ -29,7 +29,7 @@ etcd_cert_entity_server_san:
   - IP:127.0.0.1
   - DNS:localhost
 
-  # Node-specific
+  # Node
   - "IP:{{ nebula_cert_entity_host_ip | ansible.utils.ipaddr('address') }}"
   - "DNS:{{ etcd_config_member_name }}.server.etcd"
 
@@ -46,7 +46,7 @@ etcd_cert_entity_peer_san:
   - IP:127.0.0.1
   - DNS:localhost
 
-  # Node-specific
+  # Node
   - "IP:{{ nebula_cert_entity_host_ip | ansible.utils.ipaddr('address') }}"
   - "DNS:{{ etcd_config_member_name }}.peer.etcd"
 

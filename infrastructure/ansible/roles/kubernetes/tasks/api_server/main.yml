@@ -1,0 +1,6 @@
+---
+- name: Create Kubernetes API server certificates
+  tags: cert
+  become: false
+  delegate_to: localhost
+  ansible.builtin.import_tasks: cert.yml

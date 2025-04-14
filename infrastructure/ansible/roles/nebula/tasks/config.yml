@@ -14,7 +14,7 @@
     owner: root
     group: root
 
-- name: Copy Nebula cert certificates
+- name: Copy Nebula certificates
   loop:
     - label: CA certificate
       src: "{{ (nebula_cert_ca_local_dir, 'ca.crt') | ansible.builtin.path_join }}"
