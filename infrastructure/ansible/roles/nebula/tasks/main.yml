@@ -18,13 +18,7 @@
 
 - name: Configure Nebula
   tags: config
-  notify: Restart Nebula service
-  ansible.builtin.import_tasks: config.yml
-
-- name: Install Nebula service
-  tags: service
-  notify:
     - Reload SystemD daemon
     - Enable Nebula service
     - Restart Nebula service
-  ansible.builtin.import_tasks: service.yml
+  ansible.builtin.import_tasks: config.yml

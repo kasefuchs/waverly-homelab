@@ -8,6 +8,12 @@ nebula_config_file: "{{ (nebula_config_dir, 'config.yml') | ansible.builtin.path
 # Directory where Nebula certificate files will be stored in the config path.
 nebula_config_cert_dir: "{{ (nebula_config_dir, 'certs') | ansible.builtin.path_join }}"
 
+# Path to the Nebula service binary.
+nebula_config_service_binary_file: "{{ (nebula_install_binaries_archive_extract_dir, 'nebula') | ansible.builtin.path_join }}"
+
+# Path to the Nebula service configuration file.
+nebula_config_service_config_file: "{{ nebula_config_file }}"
+
 # Paths to Nebula's certificate files (CA, certificate, and key).
 nebula_config_pki:
   ca: "{{ (nebula_config_cert_dir, 'ca.crt') | ansible.builtin.path_join }}"

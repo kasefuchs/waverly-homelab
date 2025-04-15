@@ -7,7 +7,7 @@ After=network.target network-online.target
 
 [Service]
 Type=notify
-ExecStart={{ nebula_service_binary_file }} -config={{ nebula_service_config_file }}
+ExecStart={{ nebula_config_service_binary_file }} -config={{ nebula_config_service_config_file }}
 ExecReload=/bin/kill -HUP $MAINPID
 
 NotifyAccess=main

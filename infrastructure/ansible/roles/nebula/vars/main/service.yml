@@ -1,6 +1,0 @@
----
-# Path to the Nebula service binary.
-nebula_service_binary_file: "{{ (nebula_install_binaries_archive_extract_dir, 'nebula') | ansible.builtin.path_join }}"
-
-# Path to the Nebula service configuration file.
-nebula_service_config_file: "{{ nebula_config_file }}"

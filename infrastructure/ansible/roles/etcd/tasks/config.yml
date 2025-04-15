@@ -54,3 +54,9 @@
     mode: "0644"
     owner: root
     group: root
+
+- name: Install etcd service
+  ansible.builtin.template:
+    src: etc/systemd/system/etcd.service.j2
+    dest: /etc/systemd/system/etcd.service
+    mode: "0644"

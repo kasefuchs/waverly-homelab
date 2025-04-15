@@ -10,3 +10,9 @@ container_runtime_containerd_config_cni_binaries_dir: "{{ container_runtime_cni_
 
 # Directory where containerd expects to find CNI network configuration files.
 container_runtime_containerd_config_cni_network_config_dir: "{{ container_runtime_cni_plugins_config_network_dir }}"
+
+# Path to the containerd service binary used by the container runtime.
+container_runtime_containerd_config_service_binary_file: "{{ (container_runtime_containerd_install_binaries_archive_extract_dir, 'containerd') | ansible.builtin.path_join }}"
+
+# Path to the containerd service configuration file.
+container_runtime_containerd_config_service_config_file: "{{ container_runtime_containerd_config_file }}"

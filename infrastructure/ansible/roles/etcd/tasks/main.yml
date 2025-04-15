@@ -18,13 +18,8 @@
 
 - name: Configure etcd
   tags: config
-  notify: Restart etcd service
-  ansible.builtin.import_tasks: config.yml
-
-- name: Install etcd service
-  tags: service
   notify:
     - Reload SystemD daemon
     - Enable etcd service
     - Restart etcd service
-  ansible.builtin.import_tasks: service.yml
+  ansible.builtin.import_tasks: config.yml

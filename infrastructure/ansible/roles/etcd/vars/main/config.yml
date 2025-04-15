@@ -1,5 +1,5 @@
 ---
-#
+# Directory where etcd data files will be stored.
 etcd_config_data_dir: /var/lib/etcd
 
 # Directory where etcd configuration files will be stored.
@@ -10,6 +10,12 @@ etcd_config_file: "{{ (etcd_config_dir, 'etcd.conf.yml') | ansible.builtin.path_
 
 # Directory where etcd certificate files will be stored in the config path.
 etcd_config_cert_dir: "{{ (etcd_config_dir, 'certs') | ansible.builtin.path_join }}"
+
+# Path to the etcd service binary.
+etcd_config_service_binary_file: "{{ (etcd_install_binaries_archive_extract_dir, 'etcd') | ansible.builtin.path_join }}"
+
+# Path to the etcd service configuration file.
+etcd_config_service_config_file: "{{ etcd_config_file }}"
 
 # Directory where etcd TLS configuration for peer communication is defined.
 etcd_config_peer_tls:
