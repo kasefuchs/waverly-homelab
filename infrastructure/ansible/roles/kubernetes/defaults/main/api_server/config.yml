@@ -1,0 +1,19 @@
+---
+# Kubernetes API server configuration flags.
+kubernetes_api_server_config_flags:
+  --advertise-address={{ nebula_cert_entity_host_ip | ansible.utils.ipaddr('address') }}
+  --bind-address={{ nebula_cert_entity_host_ip | ansible.utils.ipaddr('address') }}
+  --secure-port=6443
+  --etcd-servers=https://{{ nebula_cert_entity_host_ip | ansible.utils.ipaddr('address') }}:2379
+  --etcd-cafile={{ (kubernetes_api_server_config_cert_ca_dir, 'etcd.crt') | ansible.builtin.path_join }}
+  --etcd-certfile={{ (kubernetes_api_server_config_cert_entity_dir, 'etcd.crt') | ansible.builtin.path_join }}
+  --etcd-keyfile={{ (kubernetes_api_server_config_cert_entity_dir, 'etcd.key') | ansible.builtin.path_join }}
+  --client-ca-file={{ (kubernetes_api_server_config_cert_ca_dir, 'kubernetes.crt') | ansible.builtin.path_join }}
+  --tls-cert-file={{ (kubernetes_api_server_config_cert_entity_dir, 'server.crt') | ansible.builtin.path_join }}
+  --tls-private-key-file={{ (kubernetes_api_server_config_cert_entity_dir, 'server.key') | ansible.builtin.path_join }}
+  --service-account-key-file={{ (kubernetes_api_server_config_cert_entity_dir, 'service-account.crt') | ansible.builtin.path_join }}
+  --service-account-signing-key-file={{ (kubernetes_api_server_config_cert_entity_dir, 'service-account.key') | ansible.builtin.path_join }}
+  --service-account-issuer=https://kubernetes.default.svc.cluster.local
+  --kubelet-client-certificate={{ (kubernetes_api_server_config_cert_entity_dir, 'kubelet.crt') | ansible.builtin.path_join }}
+  --kubelet-client-key={{ (kubernetes_api_server_config_cert_entity_dir, 'kubelet.key') | ansible.builtin.path_join }}
+  --authorization-mode=Node,RBAC

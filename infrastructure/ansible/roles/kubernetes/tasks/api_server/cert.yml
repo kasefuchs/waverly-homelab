@@ -5,17 +5,43 @@
     path: "{{ (kubernetes_api_server_cert_entity_local_dir, inventory_hostname) | ansible.builtin.path_join }}"
     state: directory
 
-- name: Create certificates
+- name: Create API server kubelet client certificate
+  run_once: true
+  block:
+    - name: Create API server kubelet client private key
+      register: kubernetes_api_server_cert_entity_kubelet_client_private_key
+      community.crypto.openssl_privatekey:
+        path: "{{ (kubernetes_api_server_cert_entity_local_dir, 'kubelet.key') | ansible.builtin.path_join }}"
+
+    - name: Create API server kubelet client certificate signing request
+      register: kubernetes_api_server_cert_entity_kubelet_client_csr
+      community.crypto.openssl_csr:
+        path: "{{ (kubernetes_api_server_cert_entity_local_dir, 'kubelet.csr') | ansible.builtin.path_join }}"
+        privatekey_path: "{{ kubernetes_api_server_cert_entity_kubelet_client_private_key.filename }}"
+        subject: "{{ kubernetes_api_server_cert_entity_kubelet_client_subject }}"
+        extended_key_usage: [clientAuth]
+
+    - name: Sign API server kubelet client certificate
+      community.crypto.x509_certificate:
+        path: "{{ (kubernetes_api_server_cert_entity_local_dir, 'kubelet.crt') | ansible.builtin.path_join }}"
+        provider: ownca
+        csr_path: "{{ kubernetes_api_server_cert_entity_kubelet_client_csr.filename }}"
+        ownca_path: "{{ kubernetes_cert_ca_certificate.filename }}"
+        ownca_privatekey_path: "{{ kubernetes_cert_ca_private_key.filename }}"
+        ownca_not_after: "+{{ kubernetes_api_server_cert_entity_kubelet_client_duration }}"
+        ownca_not_before: "-1d"
+
+- name: Create API server certificate
   block:
     - name: Create API server private key
       register: kubernetes_api_server_cert_entity_private_key
       community.crypto.openssl_privatekey:
-        path: "{{ (kubernetes_api_server_cert_entity_local_dir, inventory_hostname, 'api.key') | ansible.builtin.path_join }}"
+        path: "{{ (kubernetes_api_server_cert_entity_local_dir, inventory_hostname, 'server.key') | ansible.builtin.path_join }}"
 
     - name: Create API server certificate signing request
       register: kubernetes_api_server_cert_entity_csr
       community.crypto.openssl_csr:
-        path: "{{ (kubernetes_api_server_cert_entity_local_dir, inventory_hostname, 'api.csr') | ansible.builtin.path_join }}"
+        path: "{{ (kubernetes_api_server_cert_entity_local_dir, inventory_hostname, 'server.csr') | ansible.builtin.path_join }}"
         privatekey_path: "{{ kubernetes_api_server_cert_entity_private_key.filename }}"
         subject: "{{ kubernetes_api_server_cert_entity_subject }}"
         subject_alt_name: "{{ kubernetes_api_server_cert_entity_san }}"
@@ -23,7 +49,7 @@
 
     - name: Sign API server certificate
       community.crypto.x509_certificate:
-        path: "{{ (kubernetes_api_server_cert_entity_local_dir, inventory_hostname, 'api.crt') | ansible.builtin.path_join }}"
+        path: "{{ (kubernetes_api_server_cert_entity_local_dir, inventory_hostname, 'server.crt') | ansible.builtin.path_join }}"
         provider: ownca
         csr_path: "{{ kubernetes_api_server_cert_entity_csr.filename }}"
         ownca_path: "{{ kubernetes_cert_ca_certificate.filename }}"

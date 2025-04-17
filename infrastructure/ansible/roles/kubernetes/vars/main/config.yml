@@ -1,0 +1,3 @@
+---
+# Directory where Kubernetes configuration files will be stored.
+kubernetes_config_dir: /etc/kubernetes/

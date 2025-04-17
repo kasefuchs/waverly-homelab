@@ -18,6 +18,7 @@
 
 - name: Configure Nebula
   tags: config
+  notify:
     - Reload SystemD daemon
     - Enable Nebula service
     - Restart Nebula service

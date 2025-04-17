@@ -38,3 +38,55 @@
         provider: selfsigned
         ownca_not_after: "+{{ kubernetes_cert_ca_duration }}"
         ownca_not_before: "-1d"
+
+- name: Create service account certificate
+  run_once: true
+  block:
+    - name: Create service account private key
+      register: kubernetes_cert_entity_service_account_private_key
+      community.crypto.openssl_privatekey:
+        path: "{{ (kubernetes_cert_entity_local_dir, 'service-account.key') | ansible.builtin.path_join }}"
+
+    - name: Create service account certificate signing request
+      register: kubernetes_cert_entity_service_account_csr
+      community.crypto.openssl_csr:
+        path: "{{ (kubernetes_cert_entity_local_dir, 'service-account.csr') | ansible.builtin.path_join }}"
+        privatekey_path: "{{ kubernetes_cert_entity_service_account_private_key.filename }}"
+        subject: "{{ kubernetes_cert_entity_service_account_subject }}"
+        extended_key_usage: [clientAuth]
+
+    - name: Sign service account certificate
+      community.crypto.x509_certificate:
+        path: "{{ (kubernetes_cert_entity_local_dir, 'service-account.crt') | ansible.builtin.path_join }}"
+        provider: ownca
+        csr_path: "{{ kubernetes_cert_entity_service_account_csr.filename }}"
+        ownca_path: "{{ kubernetes_cert_ca_certificate.filename }}"
+        ownca_privatekey_path: "{{ kubernetes_cert_ca_private_key.filename }}"
+        ownca_not_after: "+{{ kubernetes_cert_entity_service_account_duration }}"
+        ownca_not_before: "-1d"
+
+- name: Create Admin certificate
+  run_once: true
+  block:
+    - name: Create Admin private key
+      register: kubernetes_cert_entity_admin_private_key
+      community.crypto.openssl_privatekey:
+        path: "{{ (kubernetes_cert_entity_local_dir, 'admin.key') | ansible.builtin.path_join }}"
+
+    - name: Create Admin certificate signing request
+      register: kubernetes_cert_entity_admin_csr
+      community.crypto.openssl_csr:
+        path: "{{ (kubernetes_cert_entity_local_dir, 'admin.csr') | ansible.builtin.path_join }}"
+        privatekey_path: "{{ kubernetes_cert_entity_admin_private_key.filename }}"
+        subject: "{{ kubernetes_cert_entity_admin_subject }}"
+        extended_key_usage: [clientAuth]
+
+    - name: Sign Admin certificate
+      community.crypto.x509_certificate:
+        path: "{{ (kubernetes_cert_entity_local_dir, 'admin.crt') | ansible.builtin.path_join }}"
+        provider: ownca
+        csr_path: "{{ kubernetes_cert_entity_admin_csr.filename }}"
+        ownca_path: "{{ kubernetes_cert_ca_certificate.filename }}"
+        ownca_privatekey_path: "{{ kubernetes_cert_ca_private_key.filename }}"
+        ownca_not_after: "+{{ kubernetes_cert_entity_admin_duration }}"
+        ownca_not_before: "-1d"

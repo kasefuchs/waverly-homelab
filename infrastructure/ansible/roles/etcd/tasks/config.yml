@@ -6,6 +6,10 @@
     - path: "{{ etcd_config_data_dir }}"
       mode: "0755"
     - path: "{{ etcd_config_cert_dir }}"
+      mode: "0755"
+    - path: "{{ etcd_config_cert_ca_dir }}"
+      mode: "0755"
+    - path: "{{ etcd_config_cert_entity_dir }}"
       mode: "0700"
   loop_control:
     label: "{{ item.path }}"
@@ -18,25 +22,25 @@
 
 - name: Copy etcd cert certificates
   loop:
-    - label: CA certificate
+    - label: etcd CA certificate
       src: "{{ (etcd_cert_ca_local_dir, 'ca.crt') | ansible.builtin.path_join }}"
-      dest: "{{ (etcd_config_cert_dir, 'ca.crt') | ansible.builtin.path_join }}"
+      dest: "{{ (etcd_config_cert_ca_dir, 'etcd.crt') | ansible.builtin.path_join }}"
       mode: "0644"
-    - label: Peer certificate
+    - label: etcd peer certificate
       src: "{{ (etcd_cert_entity_local_dir, inventory_hostname, 'peer.crt') | ansible.builtin.path_join }}"
-      dest: "{{ (etcd_config_cert_dir, 'peer.crt') | ansible.builtin.path_join }}"
+      dest: "{{ (etcd_config_cert_entity_dir, 'peer.crt') | ansible.builtin.path_join }}"
       mode: "0644"
-    - label: Peer private key
+    - label: etcd peer private key
       src: "{{ (etcd_cert_entity_local_dir, inventory_hostname, 'peer.key') | ansible.builtin.path_join }}"
-      dest: "{{ (etcd_config_cert_dir, 'peer.key') | ansible.builtin.path_join }}"
+      dest: "{{ (etcd_config_cert_entity_dir, 'peer.key') | ansible.builtin.path_join }}"
       mode: "0600"
-    - label: Server certificate
+    - label: etcd server certificate
       src: "{{ (etcd_cert_entity_local_dir, inventory_hostname, 'server.crt') | ansible.builtin.path_join }}"
-      dest: "{{ (etcd_config_cert_dir, 'server.crt') | ansible.builtin.path_join }}"
+      dest: "{{ (etcd_config_cert_entity_dir, 'server.crt') | ansible.builtin.path_join }}"
       mode: "0644"
-    - label: Server private key
+    - label: etcd server private key
       src: "{{ (etcd_cert_entity_local_dir, inventory_hostname, 'server.key') | ansible.builtin.path_join }}"
-      dest: "{{ (etcd_config_cert_dir, 'server.key') | ansible.builtin.path_join }}"
+      dest: "{{ (etcd_config_cert_entity_dir, 'server.key') | ansible.builtin.path_join }}"
       mode: "0600"
   loop_control:
     label: "{{ item.label }}"

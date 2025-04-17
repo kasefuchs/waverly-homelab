@@ -11,7 +11,7 @@ kubernetes_download_architecture_map:
   aarch64: arm64
 
 # Directory path where specific versions of Kubernetes will be downloaded.
-kubernetes_download_version_local_dir: "{{ playbook_dir }}/../.download/{{ role_name }}/version/"
+kubernetes_download_version_local_dir: "{{ playbook_dir }}/../.download/kubernetes/version/"
 
 # Symlink path pointing to the currently used Kubernetes version.
-kubernetes_download_current_local_dir_link: "{{ playbook_dir }}/../.download/{{ role_name }}/current"
+kubernetes_download_current_local_dir_link: "{{ playbook_dir }}/../.download/kubernetes/current"

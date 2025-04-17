@@ -7,6 +7,7 @@ After=network.target local-fs.target modprobe@overlay.service
 
 [Service]
 Type=notify
+NotifyAccess=main
 ExecStart={{ container_runtime_containerd_config_service_binary_file }} --config={{ container_runtime_containerd_config_service_config_file }}
 
 Delegate=yes

@@ -3,6 +3,7 @@
 
 # Python
 .venv/
+__pycache__/
 
 # Ansible
 .ansible/

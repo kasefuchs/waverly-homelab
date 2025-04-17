@@ -11,7 +11,7 @@ container_runtime_runc_download_architecture_map:
   aarch64: arm64
 
 # Directory path where specific versions of runc will be downloaded.
-container_runtime_runc_download_version_local_dir: "{{ playbook_dir }}/../.download/{{ role_name }}/runc/version/"
+container_runtime_runc_download_version_local_dir: "{{ playbook_dir }}/../.download/container_runtime/runc/version/"
 
 # Symlink path pointing to the currently used runc version.
-container_runtime_runc_download_current_local_dir_link: "{{ playbook_dir }}/../.download/{{ role_name }}/runc/current"
+container_runtime_runc_download_current_local_dir_link: "{{ playbook_dir }}/../.download/container_runtime/runc/current"

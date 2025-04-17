@@ -1,0 +1,80 @@
+---
+- name: Create Kubernetes API server directories
+  loop:
+    - path: "{{ kubernetes_api_server_config_dir }}"
+      mode: "0755"
+    - path: "{{ kubernetes_api_server_config_cert_dir }}"
+      mode: "0755"
+    - path: "{{ kubernetes_api_server_config_cert_ca_dir }}"
+      mode: "0755"
+    - path: "{{ kubernetes_api_server_config_cert_entity_dir }}"
+      mode: "0700"
+  loop_control:
+    label: "{{ item.path }}"
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    mode: "{{ item.mode }}"
+    state: directory
+    owner: root
+    group: root
+
+- name: Include etcd certificate variables
+  run_once: true
+  ansible.builtin.include_vars: "{{ role_path }}/../etcd/vars/main/cert.yml"
+
+- name: Copy API server certificates
+  loop:
+    - label: Kubernetes CA certificate
+      src: "{{ (kubernetes_cert_ca_local_dir, 'ca.crt') | ansible.builtin.path_join }}"
+      dest: "{{ (kubernetes_api_server_config_cert_ca_dir, 'kubernetes.crt') | ansible.builtin.path_join }}"
+      mode: "0644"
+    - label: etcd CA certificate
+      src: "{{ (etcd_cert_ca_local_dir, 'ca.crt') | ansible.builtin.path_join }}"
+      dest: "{{ (kubernetes_api_server_config_cert_ca_dir, 'etcd.crt') | ansible.builtin.path_join }}"
+      mode: "0644"
+    - label: Kubernetes API server certificate
+      src: "{{ (kubernetes_api_server_cert_entity_local_dir, inventory_hostname, 'server.crt') | ansible.builtin.path_join }}"
+      dest: "{{ (kubernetes_api_server_config_cert_entity_dir, 'server.crt') | ansible.builtin.path_join }}"
+      mode: "0644"
+    - label: Kubernetes API server private key
+      src: "{{ (kubernetes_api_server_cert_entity_local_dir, inventory_hostname, 'server.key') | ansible.builtin.path_join }}"
+      dest: "{{ (kubernetes_api_server_config_cert_entity_dir, 'server.key') | ansible.builtin.path_join }}"
+      mode: "0600"
+    - label: Kubernetes API server kubelet client certificate
+      src: "{{ (kubernetes_api_server_cert_entity_local_dir, 'kubelet.crt') | ansible.builtin.path_join }}"
+      dest: "{{ (kubernetes_api_server_config_cert_entity_dir, 'kubelet.crt') | ansible.builtin.path_join }}"
+      mode: "0644"
+    - label: Kubernetes API server kubelet client private key
+      src: "{{ (kubernetes_api_server_cert_entity_local_dir, 'kubelet.key') | ansible.builtin.path_join }}"
+      dest: "{{ (kubernetes_api_server_config_cert_entity_dir, 'kubelet.key') | ansible.builtin.path_join }}"
+      mode: "0600"
+    - label: Kubernetes service account certificate
+      src: "{{ (kubernetes_cert_entity_local_dir, 'service-account.crt') | ansible.builtin.path_join }}"
+      dest: "{{ (kubernetes_api_server_config_cert_entity_dir, 'service-account.crt') | ansible.builtin.path_join }}"
+      mode: "0644"
+    - label: Kubernetes service account private key
+      src: "{{ (kubernetes_cert_entity_local_dir, 'service-account.key') | ansible.builtin.path_join }}"
+      dest: "{{ (kubernetes_api_server_config_cert_entity_dir, 'service-account.key') | ansible.builtin.path_join }}"
+      mode: "0600"
+    - label: etcd client certificate
+      src: "{{ (etcd_cert_entity_local_dir, 'client.crt') | ansible.builtin.path_join }}"
+      dest: "{{ (kubernetes_api_server_config_cert_entity_dir, 'etcd.crt') | ansible.builtin.path_join }}"
+      mode: "0644"
+    - label: etcd client private key
+      src: "{{ (etcd_cert_entity_local_dir, 'client.key') | ansible.builtin.path_join }}"
+      dest: "{{ (kubernetes_api_server_config_cert_entity_dir, 'etcd.key') | ansible.builtin.path_join }}"
+      mode: "0600"
+  loop_control:
+    label: "{{ item.label }}"
+  ansible.builtin.copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: "{{ item.mode }}"
+    owner: root
+    group: root
+
+- name: Install Kubernetes API server service
+  ansible.builtin.template:
+    src: etc/systemd/system/kubernetes-api-server.service.j2
+    dest: /etc/systemd/system/kubernetes-api-server.service
+    mode: "0644"

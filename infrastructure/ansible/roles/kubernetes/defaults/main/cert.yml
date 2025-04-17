@@ -5,3 +5,18 @@ kubernetes_cert_ca_subject:
 
 # Duration of CA certificate validity.
 kubernetes_cert_ca_duration: 3650d
+
+# Subject details for the Kubernetes service account certificate.
+kubernetes_cert_entity_service_account_subject:
+  CN: service-accounts
+
+# Duration of Kubernetes service account certificate validity.
+kubernetes_cert_entity_service_account_duration: 1825d
+
+# Subject details for the Kubernetes Admin certificate.
+kubernetes_cert_entity_admin_subject:
+  CN: admin
+  O: system:masters
+
+# Duration of Kubernetes Admin certificate validity.
+kubernetes_cert_entity_admin_duration: 1825d

@@ -1,14 +1,15 @@
 {{ ansible_managed | ansible.builtin.comment }}
 
 [Unit]
-Description=etcd: Distributed key-value store
+Description=Kubernetes API server: Frontend to the cluster's shared state
 Wants=network.target network-online.target local-fs.target nebula.service
 After=network.target network-online.target local-fs.target nebula.service
 
 [Service]
 Type=notify
 NotifyAccess=main
-ExecStart={{ etcd_config_service_binary_file }} --config-file={{ etcd_config_service_config_file }}
+ExecStart={{ kubernetes_api_server_config_service_binary_file }} \
+  {{ kubernetes_api_server_config_flags }}
 
 KillMode=process
 Restart=always

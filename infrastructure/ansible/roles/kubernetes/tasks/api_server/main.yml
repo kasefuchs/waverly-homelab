@@ -4,3 +4,11 @@
   become: false
   delegate_to: localhost
   ansible.builtin.import_tasks: cert.yml
+
+- name: Configure Kubernetes API server
+  tags: config
+  notify:
+    - Reload SystemD daemon
+    - Enable Kubernetes API server service
+    - Restart Kubernetes API server service
+  ansible.builtin.import_tasks: config.yml

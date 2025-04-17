@@ -1,7 +1,15 @@
 ---
+# Subject details for the Kubernetes API server kubelet client certificate.
+kubernetes_api_server_cert_entity_kubelet_client_subject:
+  CN: kube-apiserver-kubelet-client
+  O: system:masters
+
+# Duration of Kubernetes API server kubelet client certificate validity.
+kubernetes_api_server_cert_entity_kubelet_client_duration: 1825d
+
 # Subject details for the Kubernetes API server certificate.
 kubernetes_api_server_cert_entity_subject:
-  CN: kubernetes
+  CN: kube-apiserver
 
 # Subject Alternative Names for the Kubernetes API server certificate.
 kubernetes_api_server_cert_entity_san:

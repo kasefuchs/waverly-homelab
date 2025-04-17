@@ -4,10 +4,12 @@ etcd_config_member_name: "{{ inventory_hostname }}"
 
 # List of peer URLs etcd listens on.
 etcd_config_listen_peer_urls:
+  - "https://127.0.0.1:2380"
   - "https://{{ nebula_cert_entity_host_ip | ansible.utils.ipaddr('address') }}:2380"
 
 # List of client URLs etcd listens on.
 etcd_config_listen_client_urls:
+  - "https://127.0.0.1:2379"
   - "https://{{ nebula_cert_entity_host_ip | ansible.utils.ipaddr('address') }}:2379"
 
 # List of peer URLs to advertise to other members.

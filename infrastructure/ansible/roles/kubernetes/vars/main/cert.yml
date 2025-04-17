@@ -1,6 +1,6 @@
 ---
 # Base local directory for storing Kubernetes certificates.
-kubernetes_cert_local_dir: "{{ playbook_dir }}/../.certs/{{ role_name }}/{{ inventory_dir | ansible.builtin.basename }}"
+kubernetes_cert_local_dir: "{{ playbook_dir }}/../.certs/kubernetes/{{ inventory_dir | ansible.builtin.basename }}"
 
 # Directory for storing Kubernetes CA files.
 kubernetes_cert_ca_local_dir: "{{ (kubernetes_cert_local_dir, 'ca') | ansible.builtin.path_join }}"

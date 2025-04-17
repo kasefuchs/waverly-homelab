@@ -1,0 +1,15 @@
+---
+# Directory where Kubernetes API server configuration files will be stored.
+kubernetes_api_server_config_dir: "{{ (kubernetes_config_dir, 'api-server') | ansible.builtin.path_join }}"
+
+# Directory where Kubernetes API server certificate files will be stored in the config path.
+kubernetes_api_server_config_cert_dir: "{{ (kubernetes_api_server_config_dir, 'certs') | ansible.builtin.path_join }}"
+
+# Directory where Kubernetes API serverCAcertificate files will be stored in the config path.
+kubernetes_api_server_config_cert_ca_dir: "{{ (kubernetes_api_server_config_cert_dir, 'ca') | ansible.builtin.path_join }}"
+
+# Directory where Kubernetes API server entity certificate files will be stored in the config path.
+kubernetes_api_server_config_cert_entity_dir: "{{ (kubernetes_api_server_config_cert_dir, 'entity') | ansible.builtin.path_join }}"
+
+# Path to the Kubernetes API server service binary.
+kubernetes_api_server_config_service_binary_file: "{{ (kubernetes_install_binaries_archive_extract_dir, 'kube-apiserver') | ansible.builtin.path_join }}"
