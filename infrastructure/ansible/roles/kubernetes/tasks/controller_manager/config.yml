@@ -65,7 +65,7 @@
               - config
               - set-cluster
               - default
-              - --server={{ kubernetes_controller_manager_config_master }}
+              - --server={{ kubernetes_controller_manager_config_server }}
               - --certificate-authority={{ (kubernetes_controller_manager_config_cert_ca_dir, 'kubernetes.crt') | ansible.builtin.path_join }}
 
         - name: Set credentials for Kubernetes controller manager

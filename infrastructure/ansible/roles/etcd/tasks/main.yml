@@ -1,25 +1,37 @@
 ---
 - name: Download etcd
   tags: download
-  become: false
-  run_once: true
-  delegate_to: localhost
-  ansible.builtin.import_tasks: download.yml
+  ansible.builtin.include_tasks:
+    file: download.yml
+    apply:
+      tags: download
+      become: false
+      run_once: true
+      delegate_to: localhost
 
 - name: Install etcd
   tags: install
-  ansible.builtin.import_tasks: install.yml
+  ansible.builtin.include_tasks:
+    file: install.yml
+    apply:
+      tags: install
 
 - name: Create etcd certificates
   tags: cert
-  become: false
-  delegate_to: localhost
-  ansible.builtin.import_tasks: cert.yml
+  ansible.builtin.include_tasks:
+    file: cert.yml
+    apply:
+      tags: cert
+      become: false
+      delegate_to: localhost
 
 - name: Configure etcd
   tags: config
-  notify:
-    - Reload SystemD daemon
-    - Enable etcd service
-    - Restart etcd service
-  ansible.builtin.import_tasks: config.yml
+  ansible.builtin.include_tasks:
+    file: config.yml
+    apply:
+      tags: config
+      notify:
+        - Reload SystemD daemon
+        - Enable etcd service
+        - Restart etcd service

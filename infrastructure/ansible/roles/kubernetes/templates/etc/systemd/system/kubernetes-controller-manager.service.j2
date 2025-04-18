@@ -6,8 +6,7 @@ Wants=network.target network-online.target local-fs.target nebula.service
 After=network.target network-online.target local-fs.target nebula.service
 
 [Service]
-Type=notify
-NotifyAccess=main
+Type=simple
 ExecStart={{ kubernetes_controller_manager_config_service_binary_file }} \
   {{ kubernetes_controller_manager_config_flags }}
 

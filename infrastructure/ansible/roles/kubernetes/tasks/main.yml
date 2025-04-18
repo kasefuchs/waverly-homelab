@@ -1,25 +1,40 @@
 ---
 - name: Download Kubernetes
   tags: download
-  become: false
-  run_once: true
-  delegate_to: localhost
-  ansible.builtin.import_tasks: download.yml
+  ansible.builtin.include_tasks:
+    file: download.yml
+    apply:
+      tags: download
+      become: false
+      run_once: true
+      delegate_to: localhost
 
 - name: Install Kubernetes
   tags: install
-  ansible.builtin.import_tasks: install.yml
+  ansible.builtin.include_tasks:
+    file: install.yml
+    apply:
+      tags: install
 
 - name: Create Kubernetes certificates
   tags: cert
-  become: false
-  delegate_to: localhost
-  ansible.builtin.import_tasks: cert.yml
+  ansible.builtin.include_tasks:
+    file: cert.yml
+    apply:
+      tags: cert
+      become: false
+      delegate_to: localhost
 
 - name: Setup Kubernetes API server
   tags: api_server
-  ansible.builtin.import_tasks: api_server/main.yml
+  ansible.builtin.include_tasks:
+    file: api_server/main.yml
+    apply:
+      tags: api_server
 
 - name: Setup Kubernetes controller manager
   tags: controller_manager
-  ansible.builtin.import_tasks: controller_manager/main.yml
+  ansible.builtin.include_tasks:
+    file: controller_manager/main.yml
+    apply:
+      tags: controller_manager
