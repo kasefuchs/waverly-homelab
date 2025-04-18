@@ -1,0 +1,17 @@
+---
+# Subject details for the Kubernetes controller manager certificate.
+kubernetes_controller_manager_cert_entity_subject:
+  CN: system:kube-controller-manager
+  O: system:kube-controller-manager
+
+# Subject Alternative Names for the Kubernetes controller manager certificate.
+kubernetes_controller_manager_cert_entity_san:
+  # Local
+  - IP:127.0.0.1
+  - DNS:localhost
+
+  # DNS
+  - DNS:kube-controller-manager
+
+# Duration of Kubernetes controller manager certificate validity.
+kubernetes_controller_manager_cert_entity_duration: 1825d

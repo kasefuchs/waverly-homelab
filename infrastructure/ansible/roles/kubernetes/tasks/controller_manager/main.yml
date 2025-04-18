@@ -1,0 +1,14 @@
+---
+- name: Create Kubernetes controller manager certificates
+  tags: cert
+  become: false
+  delegate_to: localhost
+  ansible.builtin.import_tasks: cert.yml
+
+- name: Configure Kubernetes controller manager
+  tags: config
+  notify:
+    - Reload SystemD daemon
+    - Enable Kubernetes controller manager service
+    - Restart Kubernetes controller manager service
+  ansible.builtin.import_tasks: config.yml

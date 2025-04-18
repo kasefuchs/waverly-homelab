@@ -14,4 +14,5 @@ kubernetes_install_binaries_unarchive_include:
   - kubernetes/server/bin/kube-controller-manager
   - kubernetes/server/bin/kube-proxy
   - kubernetes/server/bin/kube-scheduler
+  - kubernetes/server/bin/kubectl
   - kubernetes/server/bin/kubelet

@@ -19,3 +19,7 @@
 - name: Setup Kubernetes API server
   tags: api_server
   ansible.builtin.import_tasks: api_server/main.yml
+
+- name: Setup Kubernetes controller manager
+  tags: controller_manager
+  ansible.builtin.import_tasks: controller_manager/main.yml

@@ -1,0 +1,21 @@
+{{ ansible_managed | ansible.builtin.comment }}
+
+[Unit]
+Description=Kubernetes controller manager: Core control loops shipped with Kubernetes
+Wants=network.target network-online.target local-fs.target nebula.service
+After=network.target network-online.target local-fs.target nebula.service
+
+[Service]
+Type=notify
+NotifyAccess=main
+ExecStart={{ kubernetes_controller_manager_config_service_binary_file }} \
+  {{ kubernetes_controller_manager_config_flags }}
+
+KillMode=process
+Restart=always
+RestartSec=5
+
+LimitNOFILE=infinity
+
+[Install]
+WantedBy=multi-user.target

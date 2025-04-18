@@ -1,0 +1,3 @@
+---
+# Directory for storing Kubernetes controller manager entity (host) certificate and key files.
+kubernetes_controller_manager_cert_entity_local_dir: "{{ (kubernetes_cert_entity_local_dir, 'controller_manager') | ansible.builtin.path_join }}"

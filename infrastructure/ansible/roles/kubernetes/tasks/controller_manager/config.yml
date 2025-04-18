@@ -1,0 +1,115 @@
+---
+- name: Create Kubernetes controller manager directories
+  loop:
+    - path: "{{ kubernetes_controller_manager_config_dir }}"
+      mode: "0755"
+    - path: "{{ kubernetes_controller_manager_config_cert_dir }}"
+      mode: "0755"
+    - path: "{{ kubernetes_controller_manager_config_cert_ca_dir }}"
+      mode: "0755"
+    - path: "{{ kubernetes_controller_manager_config_cert_entity_dir }}"
+      mode: "0700"
+  loop_control:
+    label: "{{ item.path }}"
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    mode: "{{ item.mode }}"
+    state: directory
+    owner: root
+    group: root
+
+- name: Copy controller manager certificates
+  loop:
+    - label: Kubernetes CA certificate
+      src: "{{ (kubernetes_cert_ca_local_dir, 'ca.crt') | ansible.builtin.path_join }}"
+      dest: "{{ (kubernetes_controller_manager_config_cert_ca_dir, 'kubernetes.crt') | ansible.builtin.path_join }}"
+      mode: "0644"
+    - label: Kubernetes controller manager certificate
+      src: "{{ (kubernetes_controller_manager_cert_entity_local_dir, inventory_hostname, 'controller.crt') | ansible.builtin.path_join }}"
+      dest: "{{ (kubernetes_controller_manager_config_cert_entity_dir, 'controller.crt') | ansible.builtin.path_join }}"
+      mode: "0644"
+    - label: Kubernetes controller manager private key
+      src: "{{ (kubernetes_controller_manager_cert_entity_local_dir, inventory_hostname, 'controller.key') | ansible.builtin.path_join }}"
+      dest: "{{ (kubernetes_controller_manager_config_cert_entity_dir, 'controller.key') | ansible.builtin.path_join }}"
+      mode: "0600"
+    - label: Kubernetes service account private key
+      src: "{{ (kubernetes_cert_entity_local_dir, 'service-account.key') | ansible.builtin.path_join }}"
+      dest: "{{ (kubernetes_controller_manager_config_cert_entity_dir, 'service-account.key') | ansible.builtin.path_join }}"
+      mode: "0600"
+  loop_control:
+    label: "{{ item.label }}"
+  ansible.builtin.copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: "{{ item.mode }}"
+    owner: root
+    group: root
+
+- name: Create Kubernetes controller manager Kubeconfig
+  block:
+    - name: Create temporary file
+      register: kubernetes_controller_manager_config_tempfile
+      changed_when: false
+      ansible.builtin.tempfile:
+        state: file
+
+    - name: Write temporary Kubernetes controller manager Kubeconfig
+      environment:
+        KUBECONFIG: "{{ kubernetes_controller_manager_config_tempfile.path }}"
+      block:
+        - name: Set cluster for Kubernetes controller manager
+          changed_when: false
+          ansible.builtin.command:
+            argv:
+              - kubectl
+              - config
+              - set-cluster
+              - default
+              - --server={{ kubernetes_controller_manager_config_master }}
+              - --certificate-authority={{ (kubernetes_controller_manager_config_cert_ca_dir, 'kubernetes.crt') | ansible.builtin.path_join }}
+
+        - name: Set credentials for Kubernetes controller manager
+          changed_when: false
+          ansible.builtin.command:
+            argv:
+              - kubectl
+              - config
+              - set-credentials
+              - controller-manager
+              - --client-key={{ (kubernetes_controller_manager_config_cert_entity_dir, 'controller.key') | ansible.builtin.path_join }}
+              - --client-certificate={{ (kubernetes_controller_manager_config_cert_entity_dir, 'controller.crt') | ansible.builtin.path_join }}
+
+        - name: Set context for Kubernetes controller manager
+          changed_when: false
+          ansible.builtin.command:
+            argv:
+              - kubectl
+              - config
+              - set-context
+              - default
+              - --user=controller-manager
+              - --cluster=default
+
+        - name: Use context for Kubernetes controller manager
+          changed_when: false
+          ansible.builtin.command:
+            argv:
+              - kubectl
+              - config
+              - use-context
+              - default
+
+    - name: Write Kubeconfig for Kubernetes controller manager
+      ansible.builtin.copy:
+        src: "{{ kubernetes_controller_manager_config_tempfile.path }}"
+        dest: "{{ kubernetes_controller_manager_config_path }}"
+        mode: "0755"
+        owner: root
+        group: root
+        remote_src: true
+
+- name: Install Kubernetes controller manager service
+  ansible.builtin.template:
+    src: etc/systemd/system/kubernetes-controller-manager.service.j2
+    dest: /etc/systemd/system/kubernetes-controller-manager.service
+    mode: "0644"
