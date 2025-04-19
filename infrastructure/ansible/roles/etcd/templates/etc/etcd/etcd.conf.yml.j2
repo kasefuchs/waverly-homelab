@@ -14,6 +14,6 @@
     "client-transport-security": etcd_config_client_tls,
     "peer-transport-security": etcd_config_peer_tls
   }
-  | ansible.builtin.to_nice_yaml(indent=2, sort_keys=False)
+  | ansible.builtin.to_nice_yaml(indent=2)
   | trim
 }}

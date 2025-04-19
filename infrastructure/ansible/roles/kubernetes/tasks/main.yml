@@ -79,7 +79,7 @@
             - Enable Kubernetes controller manager service
             - Restart Kubernetes controller manager service
 
-- name: Setup Kubernetes scheduler manager
+- name: Setup Kubernetes scheduler
   tags: scheduler
   block:
     - name: Create Kubernetes scheduler certificates
@@ -103,3 +103,28 @@
             - Reload SystemD daemon
             - Enable Kubernetes scheduler service
             - Restart Kubernetes scheduler service
+
+- name: Setup Kubelet
+  tags: kubelet
+  block:
+    - name: Create Kubelet certificates
+      ansible.builtin.include_tasks:
+        file: kubelet/cert.yml
+        apply:
+          tags:
+            - cert
+            - kubelet
+          become: false
+          delegate_to: localhost
+
+    - name: Configure Kubelet
+      ansible.builtin.include_tasks:
+        file: kubelet/config.yml
+        apply:
+          tags:
+            - config
+            - kubelet
+          notify:
+            - Reload SystemD daemon
+            - Enable Kubelet service
+            - Restart Kubelet service

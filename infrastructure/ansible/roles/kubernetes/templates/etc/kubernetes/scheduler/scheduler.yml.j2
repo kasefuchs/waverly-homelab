@@ -1,7 +1,12 @@
+{{ ansible_managed | ansible.builtin.comment }}
 ---
-apiVersion: kubescheduler.config.k8s.io/v1
-kind: KubeSchedulerConfiguration
-clientConnection:
-  kubeconfig: {{ kubernetes_scheduler_config_kubeconfig_path }}
-leaderElection:
-  leaderElect: true
+{{ 
+  kubernetes_scheduler_config 
+  | ansible.builtin.combine({
+    "apiVersion": "kubescheduler.config.k8s.io/v1",
+    "kind": "KubeSchedulerConfiguration",
+    "clientConnection": kubernetes_scheduler_config_client_connection
+  })
+  | ansible.builtin.to_nice_yaml(indent=2)
+  | trim
+}}

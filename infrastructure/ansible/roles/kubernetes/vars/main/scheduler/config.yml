@@ -19,3 +19,7 @@ kubernetes_scheduler_config_cert_entity_dir: "{{ (kubernetes_scheduler_config_ce
 
 # Path to the Kubernetes scheduler service binary.
 kubernetes_scheduler_config_service_binary_file: "{{ (kubernetes_install_binaries_archive_extract_dir, 'kube-scheduler') | ansible.builtin.path_join }}"
+
+# Kubernetes scheduler client connection config.
+kubernetes_scheduler_config_client_connection:
+  kubeconfig: "{{ kubernetes_scheduler_config_kubeconfig_path }}"

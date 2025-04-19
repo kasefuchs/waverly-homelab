@@ -1,0 +1,117 @@
+---
+- name: Create Kubelet directories
+  loop:
+    - path: "{{ kubernetes_kubelet_config_dir }}"
+      mode: "0755"
+    - path: "{{ kubernetes_kubelet_config_cert_dir }}"
+      mode: "0755"
+    - path: "{{ kubernetes_kubelet_config_cert_ca_dir }}"
+      mode: "0755"
+    - path: "{{ kubernetes_kubelet_config_cert_entity_dir }}"
+      mode: "0700"
+  loop_control:
+    label: "{{ item.path }}"
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    mode: "{{ item.mode }}"
+    state: directory
+    owner: root
+    group: root
+
+- name: Copy kubelet certificates
+  loop:
+    - label: Kubernetes CA certificate
+      src: "{{ (kubernetes_cert_ca_local_dir, 'ca.crt') | ansible.builtin.path_join }}"
+      dest: "{{ (kubernetes_kubelet_config_cert_ca_dir, 'kubernetes.crt') | ansible.builtin.path_join }}"
+      mode: "0644"
+    - label: Kubelet certificate
+      src: "{{ (kubernetes_kubelet_cert_entity_local_dir, inventory_hostname, 'kubelet.crt') | ansible.builtin.path_join }}"
+      dest: "{{ (kubernetes_kubelet_config_cert_entity_dir, 'kubelet.crt') | ansible.builtin.path_join }}"
+      mode: "0644"
+    - label: Kubelet private key
+      src: "{{ (kubernetes_kubelet_cert_entity_local_dir, inventory_hostname, 'kubelet.key') | ansible.builtin.path_join }}"
+      dest: "{{ (kubernetes_kubelet_config_cert_entity_dir, 'kubelet.key') | ansible.builtin.path_join }}"
+      mode: "0600"
+  loop_control:
+    label: "{{ item.label }}"
+  ansible.builtin.copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: "{{ item.mode }}"
+    owner: root
+    group: root
+
+- name: Create Kubelet Kubeconfig
+  block:
+    - name: Create temporary file
+      register: kubernetes_kubelet_config_tempfile
+      changed_when: false
+      ansible.builtin.tempfile:
+        state: file
+
+    - name: Write temporary Kubelet Kubeconfig
+      environment:
+        KUBECONFIG: "{{ kubernetes_kubelet_config_tempfile.path }}"
+      block:
+        - name: Set cluster for Kubelet
+          changed_when: false
+          ansible.builtin.command:
+            argv:
+              - kubectl
+              - config
+              - set-cluster
+              - default
+              - --server={{ kubernetes_kubelet_config_server }}
+              - --certificate-authority={{ (kubernetes_kubelet_config_cert_ca_dir, 'kubernetes.crt') | ansible.builtin.path_join }}
+
+        - name: Set credentials for Kubelet
+          changed_when: false
+          ansible.builtin.command:
+            argv:
+              - kubectl
+              - config
+              - set-credentials
+              - kubelet
+              - --client-key={{ (kubernetes_kubelet_config_cert_entity_dir, 'kubelet.key') | ansible.builtin.path_join }}
+              - --client-certificate={{ (kubernetes_kubelet_config_cert_entity_dir, 'kubelet.crt') | ansible.builtin.path_join }}
+
+        - name: Set context for Kubelet
+          changed_when: false
+          ansible.builtin.command:
+            argv:
+              - kubectl
+              - config
+              - set-context
+              - default
+              - --user=kubelet
+              - --cluster=default
+
+        - name: Use context for Kubelet
+          changed_when: false
+          ansible.builtin.command:
+            argv:
+              - kubectl
+              - config
+              - use-context
+              - default
+
+    - name: Write Kubeconfig for Kubelet
+      ansible.builtin.copy:
+        src: "{{ kubernetes_kubelet_config_tempfile.path }}"
+        dest: "{{ kubernetes_kubelet_config_kubeconfig_path }}"
+        mode: "0644"
+        owner: root
+        group: root
+        remote_src: true
+
+- name: Render config for Kubelet
+  ansible.builtin.template:
+    src: etc/kubernetes/kubelet/kubelet.yml.j2
+    dest: "{{ kubernetes_kubelet_config_path }}"
+    mode: "0644"
+
+- name: Install Kubelet service
+  ansible.builtin.template:
+    src: etc/systemd/system/kubelet.service.j2
+    dest: /etc/systemd/system/kubelet.service
+    mode: "0644"

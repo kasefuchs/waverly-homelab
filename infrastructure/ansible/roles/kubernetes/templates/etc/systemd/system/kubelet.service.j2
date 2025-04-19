@@ -1,0 +1,20 @@
+{{ ansible_managed | ansible.builtin.comment }}
+
+[Unit]
+Description=Kubelet: Primary Kubernetes "node agent"
+Wants=network.target network-online.target local-fs.target nebula.service
+After=network.target network-online.target local-fs.target nebula.service
+
+[Service]
+Type=simple
+ExecStart={{ kubernetes_kubelet_config_service_binary_file }} \
+  {{ kubernetes_kubelet_config_flags }}
+
+KillMode=process
+Restart=always
+RestartSec=5
+
+LimitNOFILE=infinity
+
+[Install]
+WantedBy=multi-user.target

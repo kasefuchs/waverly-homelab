@@ -1,9 +1,10 @@
 {{ ansible_managed | ansible.builtin.comment }}
 ---
 {{ 
-  nebula_config
+  kubernetes_kubelet_config 
   | ansible.builtin.combine({
-    "pki": nebula_config_pki
+    "apiVersion": "kubelet.config.k8s.io/v1beta1",
+    "kind": "KubeletConfiguration"
   })
   | ansible.builtin.to_nice_yaml(indent=2)
   | trim

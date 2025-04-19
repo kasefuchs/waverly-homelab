@@ -32,3 +32,13 @@
   ansible.builtin.systemd_service:
     name: kubernetes-scheduler
     state: restarted
+
+- name: Enable Kubelet service
+  ansible.builtin.systemd_service:
+    name: kubelet
+    enabled: true
+
+- name: Restart Kubelet service
+  ansible.builtin.systemd_service:
+    name: kubelet
+    state: restarted

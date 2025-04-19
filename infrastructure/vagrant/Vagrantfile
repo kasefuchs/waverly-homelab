@@ -23,11 +23,20 @@ Vagrant.configure("2") do |config|
     node_name = "node-#{index.to_s.rjust(2, '0')}"
 
     config.vm.define node_name do |node|
-      node.vm.network "forwarded_port",
-                      id: "ssh",
-                      host:  settings["network"]["ports"]["ssh"]["host"] + index,
-                      guest: settings["network"]["ports"]["ssh"]["guest"],
-                      protocol: "tcp"
+      # Forward all ports from host to guest based on settings.
+      settings["network"]["ports"].each do |port_name, port_config|
+        node.vm.network "forwarded_port",
+                        id: port_name,
+                        host: port_config["host"] + index,
+                        guest: port_config["guest"],
+                        protocol: port_config["protocol"]
+      end
+
+      # Disable swap: turn it off and comment out fstab entries.
+      node.vm.provision "shell", inline: <<-SHELL
+        sudo swapoff -a
+        sudo sed -i -r '/^[^#].+\s+swap\s+/ s/^/# /' /etc/fstab
+      SHELL
     end
   end
 end

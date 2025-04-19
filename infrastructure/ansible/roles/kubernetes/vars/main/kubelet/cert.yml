@@ -1,0 +1,3 @@
+---
+# Directory for storing Kubelet entity (host) certificate and key files.
+kubernetes_kubelet_cert_entity_local_dir: "{{ (kubernetes_cert_entity_local_dir, 'kubelet') | ansible.builtin.path_join }}"

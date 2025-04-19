@@ -20,7 +20,6 @@ network:
   ports:
     # SSH port forwarding configuration.
     ssh:
-      # Base host port to be forwarded.
       host: 2230
-      # Guest port inside the VM to map to.
       guest: 22
+      protocol: tcp

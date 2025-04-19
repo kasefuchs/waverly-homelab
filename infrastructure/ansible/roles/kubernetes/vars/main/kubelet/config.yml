@@ -1,0 +1,21 @@
+---
+# Directory where Kubelet configuration files will be stored.
+kubernetes_kubelet_config_dir: "{{ (kubernetes_config_dir, 'kubelet') | ansible.builtin.path_join }}"
+
+# File where Kubelet config will be stored.
+kubernetes_kubelet_config_path: "{{ (kubernetes_kubelet_config_dir, 'kubelet.yml') | ansible.builtin.path_join }}"
+
+# File where Kubelet Kubeconfig will be stored.
+kubernetes_kubelet_config_kubeconfig_path: "{{ (kubernetes_kubelet_config_dir, 'kubeconfig') | ansible.builtin.path_join }}"
+
+# Directory where Kubelet certificate files will be stored in the config path.
+kubernetes_kubelet_config_cert_dir: "{{ (kubernetes_kubelet_config_dir, 'certs') | ansible.builtin.path_join }}"
+
+# Directory where KubeletCAcertificate files will be stored in the config path.
+kubernetes_kubelet_config_cert_ca_dir: "{{ (kubernetes_kubelet_config_cert_dir, 'ca') | ansible.builtin.path_join }}"
+
+# Directory where Kubelet entity certificate files will be stored in the config path.
+kubernetes_kubelet_config_cert_entity_dir: "{{ (kubernetes_kubelet_config_cert_dir, 'entity') | ansible.builtin.path_join }}"
+
+# Path to the Kubelet service binary.
+kubernetes_kubelet_config_service_binary_file: "{{ (kubernetes_install_binaries_archive_extract_dir, 'kubelet') | ansible.builtin.path_join }}"
