@@ -3,7 +3,7 @@
 kubernetes_controller_manager_config_dir: "{{ (kubernetes_config_dir, 'controller-manager') | ansible.builtin.path_join }}"
 
 # File where Kubernetes controller manager Kubeconfig will be stored.
-kubernetes_controller_manager_config_path: "{{ (kubernetes_controller_manager_config_dir, 'kubeconfig') | ansible.builtin.path_join }}"
+kubernetes_controller_manager_config_kubeconfig_path: "{{ (kubernetes_controller_manager_config_dir, 'kubeconfig') | ansible.builtin.path_join }}"
 
 # Directory where Kubernetes controller manager certificate files will be stored in the config path.
 kubernetes_controller_manager_config_cert_dir: "{{ (kubernetes_controller_manager_config_dir, 'certs') | ansible.builtin.path_join }}"

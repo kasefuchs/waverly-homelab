@@ -102,8 +102,8 @@
     - name: Write Kubeconfig for Kubernetes controller manager
       ansible.builtin.copy:
         src: "{{ kubernetes_controller_manager_config_tempfile.path }}"
-        dest: "{{ kubernetes_controller_manager_config_path }}"
-        mode: "0755"
+        dest: "{{ kubernetes_controller_manager_config_kubeconfig_path }}"
+        mode: "0644"
         owner: root
         group: root
         remote_src: true

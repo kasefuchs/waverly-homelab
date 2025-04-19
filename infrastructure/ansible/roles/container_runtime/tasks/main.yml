@@ -1,21 +1,94 @@
 ---
 - name: Setup runc
   tags: runc
-  ansible.builtin.include_tasks:
-    file: runc/main.yml
-    apply:
-      tags: runc
+  block:
+    - name: Download runc
+      tags: download
+      ansible.builtin.include_tasks:
+        file: runc/download.yml
+        apply:
+          tags:
+            - runc
+            - download
+          become: false
+          run_once: true
+          delegate_to: localhost
+
+    - name: Install runc
+      tags: install
+      ansible.builtin.include_tasks:
+        file: runc/install.yml
+        apply:
+          tags:
+            - runc
+            - install
 
 - name: Setup CNI plugins
   tags: cni_plugins
-  ansible.builtin.include_tasks:
-    file: cni_plugins/main.yml
-    apply:
-      tags: cni_plugins
+  block:
+    - name: Download CNI plugins
+      tags: download
+      ansible.builtin.include_tasks:
+        file: cni_plugins/download.yml
+        apply:
+          tags:
+            - download
+            - cni_plugins
+          become: false
+          run_once: true
+          delegate_to: localhost
+
+    - name: Install CNI plugins
+      tags: install
+      ansible.builtin.include_tasks:
+        file: cni_plugins/install.yml
+        apply:
+          tags:
+            - install
+            - cni_plugins
+
+    - name: Configure CNI plugins
+      tags: config
+      ansible.builtin.include_tasks:
+        file: cni_plugins/config.yml
+        apply:
+          tags:
+            - config
+            - cni_plugins
 
 - name: Setup containerd
   tags: containerd
-  ansible.builtin.include_tasks:
-    file: containerd/main.yml
-    apply:
-      tags: containerd
+  block:
+    - name: Download containerd
+      tags: download
+      ansible.builtin.include_tasks:
+        file: containerd/download.yml
+        apply:
+          tags:
+            - download
+            - containerd
+          become: false
+          run_once: true
+          delegate_to: localhost
+
+    - name: Install containerd
+      tags: install
+      ansible.builtin.include_tasks:
+        file: containerd/install.yml
+        apply:
+          tags:
+            - install
+            - containerd
+
+    - name: Configure containerd
+      tags: config
+      ansible.builtin.include_tasks:
+        file: containerd/config.yml
+        apply:
+          tags:
+            - config
+            - containerd
+          notify:
+            - Reload SystemD daemon
+            - Enable containerd service
+            - Restart containerd service

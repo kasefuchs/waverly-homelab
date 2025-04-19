@@ -1,0 +1,20 @@
+{{ ansible_managed | ansible.builtin.comment }}
+
+[Unit]
+Description=Kubernetes scheduler: Control plane process which assigns Pods to Nodes
+Wants=network.target network-online.target local-fs.target nebula.service
+After=network.target network-online.target local-fs.target nebula.service
+
+[Service]
+Type=simple
+ExecStart={{ kubernetes_scheduler_config_service_binary_file }} \
+  {{ kubernetes_scheduler_config_flags }}
+
+KillMode=process
+Restart=always
+RestartSec=5
+
+LimitNOFILE=infinity
+
+[Install]
+WantedBy=multi-user.target

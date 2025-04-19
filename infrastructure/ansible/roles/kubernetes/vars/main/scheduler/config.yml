@@ -1,0 +1,21 @@
+---
+# Directory where Kubernetes scheduler configuration files will be stored.
+kubernetes_scheduler_config_dir: "{{ (kubernetes_config_dir, 'scheduler') | ansible.builtin.path_join }}"
+
+# File where Kubernetes scheduler config will be stored.
+kubernetes_scheduler_config_path: "{{ (kubernetes_scheduler_config_dir, 'scheduler.yml') | ansible.builtin.path_join }}"
+
+# File where Kubernetes scheduler Kubeconfig will be stored.
+kubernetes_scheduler_config_kubeconfig_path: "{{ (kubernetes_scheduler_config_dir, 'kubeconfig') | ansible.builtin.path_join }}"
+
+# Directory where Kubernetes scheduler certificate files will be stored in the config path.
+kubernetes_scheduler_config_cert_dir: "{{ (kubernetes_scheduler_config_dir, 'certs') | ansible.builtin.path_join }}"
+
+# Directory where Kubernetes schedulerCAcertificate files will be stored in the config path.
+kubernetes_scheduler_config_cert_ca_dir: "{{ (kubernetes_scheduler_config_cert_dir, 'ca') | ansible.builtin.path_join }}"
+
+# Directory where Kubernetes scheduler entity certificate files will be stored in the config path.
+kubernetes_scheduler_config_cert_entity_dir: "{{ (kubernetes_scheduler_config_cert_dir, 'entity') | ansible.builtin.path_join }}"
+
+# Path to the Kubernetes scheduler service binary.
+kubernetes_scheduler_config_service_binary_file: "{{ (kubernetes_install_binaries_archive_extract_dir, 'kube-scheduler') | ansible.builtin.path_join }}"

@@ -1,0 +1,7 @@
+---
+apiVersion: kubescheduler.config.k8s.io/v1
+kind: KubeSchedulerConfiguration
+clientConnection:
+  kubeconfig: {{ kubernetes_scheduler_config_kubeconfig_path }}
+leaderElection:
+  leaderElect: true

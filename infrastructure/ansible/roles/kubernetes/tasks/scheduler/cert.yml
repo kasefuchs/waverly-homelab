@@ -1,0 +1,32 @@
+---
+- name: Create host certificate directory
+  ansible.builtin.file:
+    mode: "0700"
+    path: "{{ (kubernetes_scheduler_cert_entity_local_dir, inventory_hostname) | ansible.builtin.path_join }}"
+    state: directory
+
+- name: Create scheduler certificate
+  block:
+    - name: Create scheduler private key
+      register: kubernetes_scheduler_cert_entity_private_key
+      community.crypto.openssl_privatekey:
+        path: "{{ (kubernetes_scheduler_cert_entity_local_dir, inventory_hostname, 'scheduler.key') | ansible.builtin.path_join }}"
+
+    - name: Create scheduler certificate signing request
+      register: kubernetes_scheduler_cert_entity_csr
+      community.crypto.openssl_csr:
+        path: "{{ (kubernetes_scheduler_cert_entity_local_dir, inventory_hostname, 'scheduler.csr') | ansible.builtin.path_join }}"
+        privatekey_path: "{{ kubernetes_scheduler_cert_entity_private_key.filename }}"
+        subject: "{{ kubernetes_scheduler_cert_entity_subject }}"
+        subject_alt_name: "{{ kubernetes_scheduler_cert_entity_san }}"
+        extended_key_usage: [serverAuth, clientAuth]
+
+    - name: Sign scheduler certificate
+      community.crypto.x509_certificate:
+        path: "{{ (kubernetes_scheduler_cert_entity_local_dir, inventory_hostname, 'scheduler.crt') | ansible.builtin.path_join }}"
+        provider: ownca
+        csr_path: "{{ kubernetes_scheduler_cert_entity_csr.filename }}"
+        ownca_path: "{{ kubernetes_cert_ca_certificate.filename }}"
+        ownca_privatekey_path: "{{ kubernetes_cert_ca_private_key.filename }}"
+        ownca_not_after: "+{{ kubernetes_scheduler_cert_entity_duration }}"
+        ownca_not_before: "-1d"

@@ -1,0 +1,9 @@
+---
+# Kubernetes scheduler API server address.
+kubernetes_scheduler_config_server: https://{{ nebula_cert_entity_host_ip | ansible.utils.ipaddr('address') }}:6443
+
+# Kubernetes scheduler configuration flags.
+kubernetes_scheduler_config_flags:
+  --bind-address={{ nebula_cert_entity_host_ip | ansible.utils.ipaddr('address') }}
+  --secure-port=10259
+  --config={{ kubernetes_scheduler_config_path }}

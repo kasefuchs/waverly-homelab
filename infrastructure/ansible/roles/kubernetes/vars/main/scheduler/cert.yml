@@ -1,0 +1,3 @@
+---
+# Directory for storing Kubernetes scheduler entity (host) certificate and key files.
+kubernetes_scheduler_cert_entity_local_dir: "{{ (kubernetes_cert_entity_local_dir, 'scheduler') | ansible.builtin.path_join }}"

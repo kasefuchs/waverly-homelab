@@ -1,0 +1,17 @@
+---
+# Subject details for the Kubernetes scheduler certificate.
+kubernetes_scheduler_cert_entity_subject:
+  CN: system:kube-scheduler
+  O: system:kube-scheduler
+
+# Subject Alternative Names for the Kubernetes scheduler certificate.
+kubernetes_scheduler_cert_entity_san:
+  # Local
+  - IP:127.0.0.1
+  - DNS:localhost
+
+  # DNS
+  - DNS:kube-scheduler
+
+# Duration of Kubernetes scheduler certificate validity.
+kubernetes_scheduler_cert_entity_duration: 1825d
