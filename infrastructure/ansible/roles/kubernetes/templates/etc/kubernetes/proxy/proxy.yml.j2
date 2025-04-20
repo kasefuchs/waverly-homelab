@@ -1,0 +1,12 @@
+{{ ansible_managed | ansible.builtin.comment }}
+---
+{{ 
+  kubernetes_proxy_config 
+  | ansible.builtin.combine({
+    "apiVersion": "kubeproxy.config.k8s.io/v1alpha1",
+    "kind": "KubeProxyConfiguration",
+    "clientConnection": kubernetes_proxy_config_client_connection
+  })
+  | ansible.builtin.to_nice_yaml(indent=2)
+  | trim
+}}

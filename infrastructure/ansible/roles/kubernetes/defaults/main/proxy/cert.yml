@@ -1,0 +1,17 @@
+---
+# Subject details for the Kubernetes proxy certificate.
+kubernetes_proxy_cert_entity_subject:
+  CN: system:kube-proxy
+  O: system:node-proxier
+
+# Subject Alternative Names for the Kubernetes proxy certificate.
+kubernetes_proxy_cert_entity_san:
+  # Local
+  - IP:127.0.0.1
+  - DNS:localhost
+
+  # DNS
+  - DNS:kube-proxy
+
+# Duration of Kubernetes proxy certificate validity.
+kubernetes_proxy_cert_entity_duration: 1825d

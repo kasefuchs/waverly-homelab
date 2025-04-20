@@ -2,13 +2,14 @@
 
 [Unit]
 Description=containerd: Container runtime
-Wants=network.target local-fs.target modprobe@overlay.service
-After=network.target local-fs.target modprobe@overlay.service
+Wants=network.target local-fs.target
+After=network.target local-fs.target
 
 [Service]
 Type=notify
 NotifyAccess=main
 ExecStart={{ container_runtime_containerd_config_service_binary_file }} --config={{ container_runtime_containerd_config_service_config_file }}
+ExecStartPre=/sbin/modprobe overlay
 
 Delegate=yes
 KillMode=process

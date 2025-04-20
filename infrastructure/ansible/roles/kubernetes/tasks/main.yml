@@ -128,3 +128,28 @@
             - Reload SystemD daemon
             - Enable Kubelet service
             - Restart Kubelet service
+
+- name: Setup Kubernetes proxy
+  tags: proxy
+  block:
+    - name: Create Kubernetes proxy certificates
+      ansible.builtin.include_tasks:
+        file: proxy/cert.yml
+        apply:
+          tags:
+            - cert
+            - proxy
+          become: false
+          delegate_to: localhost
+
+    - name: Configure Kubernetes proxy
+      ansible.builtin.include_tasks:
+        file: proxy/config.yml
+        apply:
+          tags:
+            - config
+            - proxy
+          notify:
+            - Reload SystemD daemon
+            - Enable Kubernetes proxy service
+            - Restart Kubernetes proxy service

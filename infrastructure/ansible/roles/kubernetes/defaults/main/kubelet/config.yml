@@ -19,7 +19,8 @@ kubernetes_kubelet_config:
     mode: Webhook
 
 # Kubelet configuration flags.
-kubernetes_kubelet_config_flags:
-  --config={{ kubernetes_kubelet_config_path }}
+kubernetes_kubelet_config_flags: --config={{ kubernetes_kubelet_config_path }}
   --kubeconfig={{ kubernetes_kubelet_config_kubeconfig_path }}
+  --node-ip={{ nebula_cert_entity_host_ip | ansible.utils.ipaddr('address') }}
   --hostname-override={{ inventory_hostname }}
+  --pod-cidr=10.244.0.0/16

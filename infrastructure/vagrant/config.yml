@@ -23,3 +23,12 @@ network:
       host: 2230
       guest: 22
       protocol: tcp
+
+# Provisioner configuration shared across all VMs.
+provision:
+  # Shell commands to run on provision.
+  shell:
+    # Disable swap: turn it off and comment out fstab entries.
+    - |
+      sudo swapoff -a
+      sudo sed -i -r '/^[^#].+\s+swap\s+/ s/^/# /' /etc/fstab

@@ -1,0 +1,25 @@
+---
+# Directory where Kubernetes proxy configuration files will be stored.
+kubernetes_proxy_config_dir: "{{ (kubernetes_config_dir, 'proxy') | ansible.builtin.path_join }}"
+
+# File where Kubernetes proxy config will be stored.
+kubernetes_proxy_config_path: "{{ (kubernetes_proxy_config_dir, 'proxy.yml') | ansible.builtin.path_join }}"
+
+# File where Kubernetes proxy Kubeconfig will be stored.
+kubernetes_proxy_config_kubeconfig_path: "{{ (kubernetes_proxy_config_dir, 'kubeconfig') | ansible.builtin.path_join }}"
+
+# Directory where Kubernetes proxy certificate files will be stored in the config path.
+kubernetes_proxy_config_cert_dir: "{{ (kubernetes_proxy_config_dir, 'certs') | ansible.builtin.path_join }}"
+
+# Directory where Kubernetes proxyCAcertificate files will be stored in the config path.
+kubernetes_proxy_config_cert_ca_dir: "{{ (kubernetes_proxy_config_cert_dir, 'ca') | ansible.builtin.path_join }}"
+
+# Directory where Kubernetes proxy entity certificate files will be stored in the config path.
+kubernetes_proxy_config_cert_entity_dir: "{{ (kubernetes_proxy_config_cert_dir, 'entity') | ansible.builtin.path_join }}"
+
+# Path to the Kubernetes proxy service binary.
+kubernetes_proxy_config_service_binary_file: "{{ (kubernetes_install_binaries_archive_extract_dir, 'kube-proxy') | ansible.builtin.path_join }}"
+
+# Kubernetes proxy client connection config.
+kubernetes_proxy_config_client_connection:
+  kubeconfig: "{{ kubernetes_proxy_config_kubeconfig_path }}"

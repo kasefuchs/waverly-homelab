@@ -1,0 +1,32 @@
+---
+- name: Create host certificate directory
+  ansible.builtin.file:
+    mode: "0700"
+    path: "{{ (kubernetes_proxy_cert_entity_local_dir, inventory_hostname) | ansible.builtin.path_join }}"
+    state: directory
+
+- name: Create proxy certificate
+  block:
+    - name: Create proxy private key
+      register: kubernetes_proxy_cert_entity_private_key
+      community.crypto.openssl_privatekey:
+        path: "{{ (kubernetes_proxy_cert_entity_local_dir, inventory_hostname, 'proxy.key') | ansible.builtin.path_join }}"
+
+    - name: Create proxy certificate signing request
+      register: kubernetes_proxy_cert_entity_csr
+      community.crypto.openssl_csr:
+        path: "{{ (kubernetes_proxy_cert_entity_local_dir, inventory_hostname, 'proxy.csr') | ansible.builtin.path_join }}"
+        privatekey_path: "{{ kubernetes_proxy_cert_entity_private_key.filename }}"
+        subject: "{{ kubernetes_proxy_cert_entity_subject }}"
+        subject_alt_name: "{{ kubernetes_proxy_cert_entity_san }}"
+        extended_key_usage: [serverAuth, clientAuth]
+
+    - name: Sign proxy certificate
+      community.crypto.x509_certificate:
+        path: "{{ (kubernetes_proxy_cert_entity_local_dir, inventory_hostname, 'proxy.crt') | ansible.builtin.path_join }}"
+        provider: ownca
+        csr_path: "{{ kubernetes_proxy_cert_entity_csr.filename }}"
+        ownca_path: "{{ kubernetes_cert_ca_certificate.filename }}"
+        ownca_privatekey_path: "{{ kubernetes_cert_ca_private_key.filename }}"
+        ownca_not_after: "+{{ kubernetes_proxy_cert_entity_duration }}"
+        ownca_not_before: "-1d"

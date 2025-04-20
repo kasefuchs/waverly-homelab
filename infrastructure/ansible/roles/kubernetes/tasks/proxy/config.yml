@@ -1,0 +1,117 @@
+---
+- name: Create Kubernetes proxy directories
+  loop:
+    - path: "{{ kubernetes_proxy_config_dir }}"
+      mode: "0755"
+    - path: "{{ kubernetes_proxy_config_cert_dir }}"
+      mode: "0755"
+    - path: "{{ kubernetes_proxy_config_cert_ca_dir }}"
+      mode: "0755"
+    - path: "{{ kubernetes_proxy_config_cert_entity_dir }}"
+      mode: "0700"
+  loop_control:
+    label: "{{ item.path }}"
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    mode: "{{ item.mode }}"
+    state: directory
+    owner: root
+    group: root
+
+- name: Copy proxy certificates
+  loop:
+    - label: Kubernetes CA certificate
+      src: "{{ (kubernetes_cert_ca_local_dir, 'ca.crt') | ansible.builtin.path_join }}"
+      dest: "{{ (kubernetes_proxy_config_cert_ca_dir, 'kubernetes.crt') | ansible.builtin.path_join }}"
+      mode: "0644"
+    - label: Kubernetes proxy certificate
+      src: "{{ (kubernetes_proxy_cert_entity_local_dir, inventory_hostname, 'proxy.crt') | ansible.builtin.path_join }}"
+      dest: "{{ (kubernetes_proxy_config_cert_entity_dir, 'proxy.crt') | ansible.builtin.path_join }}"
+      mode: "0644"
+    - label: Kubernetes proxy private key
+      src: "{{ (kubernetes_proxy_cert_entity_local_dir, inventory_hostname, 'proxy.key') | ansible.builtin.path_join }}"
+      dest: "{{ (kubernetes_proxy_config_cert_entity_dir, 'proxy.key') | ansible.builtin.path_join }}"
+      mode: "0600"
+  loop_control:
+    label: "{{ item.label }}"
+  ansible.builtin.copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: "{{ item.mode }}"
+    owner: root
+    group: root
+
+- name: Create Kubernetes proxy Kubeconfig
+  block:
+    - name: Create temporary file
+      register: kubernetes_proxy_config_tempfile
+      changed_when: false
+      ansible.builtin.tempfile:
+        state: file
+
+    - name: Write temporary Kubernetes proxy Kubeconfig
+      environment:
+        KUBECONFIG: "{{ kubernetes_proxy_config_tempfile.path }}"
+      block:
+        - name: Set cluster for Kubernetes proxy
+          changed_when: false
+          ansible.builtin.command:
+            argv:
+              - kubectl
+              - config
+              - set-cluster
+              - default
+              - --server={{ kubernetes_proxy_config_server }}
+              - --certificate-authority={{ (kubernetes_proxy_config_cert_ca_dir, 'kubernetes.crt') | ansible.builtin.path_join }}
+
+        - name: Set credentials for Kubernetes proxy
+          changed_when: false
+          ansible.builtin.command:
+            argv:
+              - kubectl
+              - config
+              - set-credentials
+              - proxy
+              - --client-key={{ (kubernetes_proxy_config_cert_entity_dir, 'proxy.key') | ansible.builtin.path_join }}
+              - --client-certificate={{ (kubernetes_proxy_config_cert_entity_dir, 'proxy.crt') | ansible.builtin.path_join }}
+
+        - name: Set context for Kubernetes proxy
+          changed_when: false
+          ansible.builtin.command:
+            argv:
+              - kubectl
+              - config
+              - set-context
+              - default
+              - --user=proxy
+              - --cluster=default
+
+        - name: Use context for Kubernetes proxy
+          changed_when: false
+          ansible.builtin.command:
+            argv:
+              - kubectl
+              - config
+              - use-context
+              - default
+
+    - name: Write Kubeconfig for Kubernetes proxy
+      ansible.builtin.copy:
+        src: "{{ kubernetes_proxy_config_tempfile.path }}"
+        dest: "{{ kubernetes_proxy_config_kubeconfig_path }}"
+        mode: "0644"
+        owner: root
+        group: root
+        remote_src: true
+
+- name: Render config for Kubernetes proxy
+  ansible.builtin.template:
+    src: etc/kubernetes/proxy/proxy.yml.j2
+    dest: "{{ kubernetes_proxy_config_path }}"
+    mode: "0644"
+
+- name: Install Kubernetes proxy service
+  ansible.builtin.template:
+    src: etc/systemd/system/kubernetes-proxy.service.j2
+    dest: /etc/systemd/system/kubernetes-proxy.service
+    mode: "0644"

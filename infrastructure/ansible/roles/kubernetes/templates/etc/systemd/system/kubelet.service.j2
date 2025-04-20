@@ -7,8 +7,7 @@ After=network.target network-online.target local-fs.target nebula.service
 
 [Service]
 Type=simple
-ExecStart={{ kubernetes_kubelet_config_service_binary_file }} \
-  {{ kubernetes_kubelet_config_flags }}
+ExecStart={{ kubernetes_kubelet_config_service_binary_file }} {{ kubernetes_kubelet_config_flags }}
 
 KillMode=process
 Restart=always

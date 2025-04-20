@@ -1,13 +1,14 @@
 {{ ansible_managed | ansible.builtin.comment }}
 
 [Unit]
-Description=Kubernetes scheduler: Control plane process which assigns Pods to Nodes
+Description=Kubernetes proxy: Kubernetes network proxy
 Wants=network.target network-online.target local-fs.target nebula.service
 After=network.target network-online.target local-fs.target nebula.service
 
 [Service]
 Type=simple
-ExecStart={{ kubernetes_scheduler_config_service_binary_file }} {{ kubernetes_scheduler_config_flags }}
+ExecStart={{ kubernetes_proxy_config_service_binary_file }} {{ kubernetes_proxy_config_flags }}
+ExecStartPre=/sbin/modprobe br_netfilter nf_conntrack
 
 KillMode=process
 Restart=always

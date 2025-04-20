@@ -32,11 +32,10 @@ Vagrant.configure("2") do |config|
                         protocol: port_config["protocol"]
       end
 
-      # Disable swap: turn it off and comment out fstab entries.
-      node.vm.provision "shell", inline: <<-SHELL
-        sudo swapoff -a
-        sudo sed -i -r '/^[^#].+\s+swap\s+/ s/^/# /' /etc/fstab
-      SHELL
+      # Run shell commands based on settings.
+      settings["provision"]["shell"].each do |shell_command|
+        node.vm.provision "shell", inline: shell_command
+      end
     end
   end
 end

@@ -1,0 +1,12 @@
+---
+# Kubernetes proxy API server address.
+kubernetes_proxy_config_server: https://{{ nebula_cert_entity_host_ip | ansible.utils.ipaddr('address') }}:6443
+
+# Kubernetes proxy configuration.
+kubernetes_proxy_config:
+  mode: iptables
+  clusterCIDR: 10.200.0.0/16
+
+# Kubernetes proxy configuration flags.
+kubernetes_proxy_config_flags: --config={{ kubernetes_proxy_config_path }}
+  --hostname-override={{ inventory_hostname }}
