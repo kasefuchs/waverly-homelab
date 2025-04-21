@@ -6,7 +6,7 @@ kubernetes_proxy_config_server: https://{{ nebula_cert_entity_host_ip | ansible.
 kubernetes_proxy_config:
   mode: iptables
   clusterCIDR: 10.200.0.0/16
+  hostnameOverride: "{{ inventory_hostname }}"
 
 # Kubernetes proxy configuration flags.
 kubernetes_proxy_config_flags: --config={{ kubernetes_proxy_config_path }}
-  --hostname-override={{ inventory_hostname }}

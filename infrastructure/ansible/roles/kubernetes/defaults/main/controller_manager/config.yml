@@ -10,7 +10,7 @@ kubernetes_controller_manager_config_flags:
   --root-ca-file={{ (kubernetes_controller_manager_config_cert_ca_dir, 'kubernetes.crt') | ansible.builtin.path_join }}
   --service-account-private-key-file={{ (kubernetes_controller_manager_config_cert_entity_dir, 'service-account.key') | ansible.builtin.path_join }}
   --kubeconfig={{ kubernetes_controller_manager_config_kubeconfig_path }}
-  --cluster-cidr=10.244.0.0/16
+  --cluster-cidr=10.200.0.0/16
   --service-cluster-ip-range=10.32.0.0/24
   --allocate-node-cidrs=true
   --use-service-account-credentials=true

@@ -24,3 +24,5 @@ kubernetes_kubelet_config_flags: --config={{ kubernetes_kubelet_config_path }}
   --node-ip={{ nebula_cert_entity_host_ip | ansible.utils.ipaddr('address') }}
   --hostname-override={{ inventory_hostname }}
   --pod-cidr=10.244.0.0/16
+  --cluster-dns=10.32.0.10
+  --cluster-domain=cluster.local
