@@ -1,3 +1,6 @@
 ---
+# Base local directory for storing Kubernetes proxy certificates.
+kubernetes_proxy_cert_local_dir: "{{ role_path }}/../kubernetes/files/proxy/cert/{{ inventory_dir | ansible.builtin.basename }}"
+
 # Directory for storing Kubernetes proxy entity (host) certificate and key files.
-kubernetes_proxy_cert_entity_local_dir: "{{ (kubernetes_cert_entity_local_dir, 'proxy') | ansible.builtin.path_join }}"
+kubernetes_proxy_cert_entity_local_dir: "{{ (kubernetes_proxy_cert_local_dir, 'entity') | ansible.builtin.path_join }}"

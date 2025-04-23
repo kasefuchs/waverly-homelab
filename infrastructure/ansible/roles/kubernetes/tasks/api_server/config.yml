@@ -75,6 +75,6 @@
 
 - name: Install Kubernetes API server service
   ansible.builtin.template:
-    src: etc/systemd/system/kubernetes-api-server.service.j2
-    dest: /etc/systemd/system/kubernetes-api-server.service
+    src: api_server/kube-apiserver.service.j2
+    dest: /etc/systemd/system/kube-apiserver.service
     mode: "0644"

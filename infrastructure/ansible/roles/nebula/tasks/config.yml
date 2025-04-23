@@ -43,7 +43,7 @@
 
 - name: Render Nebula configuration template
   ansible.builtin.template:
-    src: etc/nebula/config.yml.j2
+    src: config.yml.j2
     dest: "{{ nebula_config_file }}"
     mode: "0644"
     owner: root
@@ -51,6 +51,6 @@
 
 - name: Install Nebula service
   ansible.builtin.template:
-    src: etc/systemd/system/nebula.service.j2
+    src: nebula.service.j2
     dest: /etc/systemd/system/nebula.service
     mode: "0644"

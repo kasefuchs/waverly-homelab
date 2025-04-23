@@ -1,3 +1,6 @@
 ---
+# Base local directory for storing Kubernetes API server certificates.
+kubernetes_api_server_cert_local_dir: "{{ role_path }}/../kubernetes/files/api_server/cert/{{ inventory_dir | ansible.builtin.basename }}"
+
 # Directory for storing Kubernetes API server entity (host) certificate and key files.
-kubernetes_api_server_cert_entity_local_dir: "{{ (kubernetes_cert_entity_local_dir, 'api_server') | ansible.builtin.path_join }}"
+kubernetes_api_server_cert_entity_local_dir: "{{ (kubernetes_api_server_cert_local_dir, 'entity') | ansible.builtin.path_join }}"

@@ -17,13 +17,13 @@
   block:
     - name: Create version directory
       ansible.builtin.file:
-        path: "{{ (container_runtime_runc_download_version_local_dir, container_runtime_runc_download_version) | ansible.builtin.path_join }}"
+        path: "{{ (container_runtime_runc_download_local_dir, container_runtime_runc_download_version) | ansible.builtin.path_join }}"
         mode: "0755"
         state: directory
 
     - name: Link current version directory
       ansible.builtin.file:
-        src: "{{ (container_runtime_runc_download_version_local_dir, container_runtime_runc_download_version) | ansible.builtin.path_join }}"
+        src: "{{ (container_runtime_runc_download_local_dir, container_runtime_runc_download_version) | ansible.builtin.path_join }}"
         dest: "{{ container_runtime_runc_download_current_local_dir_link }}"
         state: link
 

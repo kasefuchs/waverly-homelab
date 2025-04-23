@@ -17,13 +17,13 @@
   block:
     - name: Create version directory
       ansible.builtin.file:
-        path: "{{ (etcd_download_version_local_dir, etcd_download_version) | ansible.builtin.path_join }}"
+        path: "{{ (etcd_download_local_dir, etcd_download_version) | ansible.builtin.path_join }}"
         mode: "0755"
         state: directory
 
     - name: Link current version directory
       ansible.builtin.file:
-        src: "{{ (etcd_download_version_local_dir, etcd_download_version) | ansible.builtin.path_join }}"
+        src: "{{ (etcd_download_local_dir, etcd_download_version) | ansible.builtin.path_join }}"
         dest: "{{ etcd_download_current_local_dir_link }}"
         state: link
 

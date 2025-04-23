@@ -17,13 +17,13 @@
   block:
     - name: Create version directory
       ansible.builtin.file:
-        path: "{{ (nebula_download_version_local_dir, nebula_download_version) | ansible.builtin.path_join }}"
+        path: "{{ (nebula_download_local_dir, nebula_download_version) | ansible.builtin.path_join }}"
         mode: "0755"
         state: directory
 
     - name: Link current version directory
       ansible.builtin.file:
-        src: "{{ (nebula_download_version_local_dir, nebula_download_version) | ansible.builtin.path_join }}"
+        src: "{{ (nebula_download_local_dir, nebula_download_version) | ansible.builtin.path_join }}"
         dest: "{{ nebula_download_current_local_dir_link }}"
         state: link
 

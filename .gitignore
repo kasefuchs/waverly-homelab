@@ -7,9 +7,9 @@ __pycache__/
 
 # Ansible
 .ansible/
-.download/
-.certs/
 inventories/
+**/files/**/cert/
+**/files/**/download/
 
 # IDE
 .idea/

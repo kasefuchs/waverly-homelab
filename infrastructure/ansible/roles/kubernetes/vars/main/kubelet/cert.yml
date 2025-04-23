@@ -1,3 +1,6 @@
 ---
+# Base local directory for storing Kubelet certificates.
+kubernetes_kubelet_cert_local_dir: "{{ role_path }}/../kubernetes/files/kubelet/cert/{{ inventory_dir | ansible.builtin.basename }}"
+
 # Directory for storing Kubelet entity (host) certificate and key files.
-kubernetes_kubelet_cert_entity_local_dir: "{{ (kubernetes_cert_entity_local_dir, 'kubelet') | ansible.builtin.path_join }}"
+kubernetes_kubelet_cert_entity_local_dir: "{{ (kubernetes_kubelet_cert_local_dir, 'entity') | ansible.builtin.path_join }}"

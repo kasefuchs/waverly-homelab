@@ -5,32 +5,32 @@
 
 - name: Enable Kubernetes API server service
   ansible.builtin.systemd_service:
-    name: kubernetes-api-server
+    name: kube-apiserver
     enabled: true
 
 - name: Restart Kubernetes API server service
   ansible.builtin.systemd_service:
-    name: kubernetes-api-server
+    name: kube-apiserver
     state: restarted
 
 - name: Enable Kubernetes controller manager service
   ansible.builtin.systemd_service:
-    name: kubernetes-controller-manager
+    name: kube-controller-manager
     enabled: true
 
 - name: Restart Kubernetes controller manager service
   ansible.builtin.systemd_service:
-    name: kubernetes-controller-manager
+    name: kube-controller-manager
     state: restarted
 
 - name: Enable Kubernetes scheduler service
   ansible.builtin.systemd_service:
-    name: kubernetes-scheduler
+    name: kube-scheduler
     enabled: true
 
 - name: Restart Kubernetes scheduler service
   ansible.builtin.systemd_service:
-    name: kubernetes-scheduler
+    name: kube-scheduler
     state: restarted
 
 - name: Enable Kubelet service
@@ -45,10 +45,10 @@
 
 - name: Enable Kubernetes proxy service
   ansible.builtin.systemd_service:
-    name: kubernetes-proxy
+    name: kube-proxy
     enabled: true
 
 - name: Restart Kubernetes proxy service
   ansible.builtin.systemd_service:
-    name: kubernetes-proxy
+    name: kube-proxy
     state: restarted

@@ -1,6 +1,6 @@
 ---
 # Base local directory for storing Nebula certificates.
-nebula_cert_local_dir: "{{ playbook_dir }}/../.certs/nebula/{{ inventory_dir | ansible.builtin.basename }}"
+nebula_cert_local_dir: "{{ role_path }}/../nebula/files/cert/{{ inventory_dir | ansible.builtin.basename }}"
 
 # Directory for storing Nebula CA files.
 nebula_cert_ca_local_dir: "{{ (nebula_cert_local_dir, 'ca') | ansible.builtin.path_join }}"

@@ -104,14 +104,20 @@
         group: root
         remote_src: true
 
+    - name: Delete temporary Kubeconfig for Kubelet
+      changed_when: false
+      ansible.builtin.file:
+        path: "{{ kubernetes_kubelet_config_tempfile.path }}"
+        state: absent
+
 - name: Render config for Kubelet
   ansible.builtin.template:
-    src: etc/kubernetes/kubelet/kubelet.yml.j2
+    src: kubelet/kubelet.yml.j2
     dest: "{{ kubernetes_kubelet_config_path }}"
     mode: "0644"
 
 - name: Install Kubelet service
   ansible.builtin.template:
-    src: etc/systemd/system/kubelet.service.j2
+    src: kubelet/kubelet.service.j2
     dest: /etc/systemd/system/kubelet.service
     mode: "0644"
