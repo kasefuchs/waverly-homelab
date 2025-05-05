@@ -1,4 +1,59 @@
 ---
+- name: Create Kubernetes admin Kubeconfig
+  become: false
+  run_once: true
+  delegate_to: localhost
+  block:
+    - name: Write Kubernetes admin Kubeconfig
+      environment:
+        KUBECONFIG: "{{ (kubernetes_api_server_config_local_dir, 'admin.kubeconfig') | ansible.builtin.path_join }}"
+      block:
+        - name: Set cluster for Kubernetes admin
+          changed_when: false
+          ansible.builtin.command:
+            argv:
+              - kubectl
+              - config
+              - set-cluster
+              - default
+              - --server={{ kubernetes_api_server_config_admin_server }}
+              - --certificate-authority={{ (kubernetes_cert_ca_local_dir, 'ca.crt') | ansible.builtin.path_join }}
+
+        - name: Set credentials for Kubernetes admin
+          changed_when: false
+          ansible.builtin.command:
+            argv:
+              - kubectl
+              - config
+              - set-credentials
+              - admin
+              - --client-key={{ (kubernetes_cert_entity_local_dir, 'admin.key') | ansible.builtin.path_join }}
+              - --client-certificate={{ (kubernetes_cert_entity_local_dir, 'admin.crt') | ansible.builtin.path_join }}
+
+        - name: Set context for Kubernetes admin
+          changed_when: false
+          ansible.builtin.command:
+            argv:
+              - kubectl
+              - config
+              - set-context
+              - default
+              - --user=admin
+              - --cluster=default
+
+        - name: Use context for Kubernetes admin
+          changed_when: false
+          ansible.builtin.command:
+            argv:
+              - kubectl
+              - config
+              - use-context
+              - default
+
+- name: Include etcd certificate variables
+  run_once: true
+  ansible.builtin.include_vars: "{{ role_path }}/../etcd/vars/main/cert.yml"
+
 - name: Create Kubernetes API server directories
   loop:
     - path: "{{ kubernetes_api_server_config_dir }}"
@@ -18,19 +73,11 @@
     owner: root
     group: root
 
-- name: Include etcd certificate variables
-  run_once: true
-  ansible.builtin.include_vars: "{{ role_path }}/../etcd/vars/main/cert.yml"
-
-- name: Copy API server certificates
+- name: Copy API server files
   loop:
     - label: Kubernetes CA certificate
       src: "{{ (kubernetes_cert_ca_local_dir, 'ca.crt') | ansible.builtin.path_join }}"
       dest: "{{ (kubernetes_api_server_config_cert_ca_dir, 'kubernetes.crt') | ansible.builtin.path_join }}"
-      mode: "0644"
-    - label: etcd CA certificate
-      src: "{{ (etcd_cert_ca_local_dir, 'ca.crt') | ansible.builtin.path_join }}"
-      dest: "{{ (kubernetes_api_server_config_cert_ca_dir, 'etcd.crt') | ansible.builtin.path_join }}"
       mode: "0644"
     - label: Kubernetes API server certificate
       src: "{{ (kubernetes_api_server_cert_entity_local_dir, inventory_hostname, 'server.crt') | ansible.builtin.path_join }}"
@@ -56,6 +103,10 @@
       src: "{{ (kubernetes_cert_entity_local_dir, 'service-account.key') | ansible.builtin.path_join }}"
       dest: "{{ (kubernetes_api_server_config_cert_entity_dir, 'service-account.key') | ansible.builtin.path_join }}"
       mode: "0600"
+    - label: etcd CA certificate
+      src: "{{ (etcd_cert_ca_local_dir, 'ca.crt') | ansible.builtin.path_join }}"
+      dest: "{{ (kubernetes_api_server_config_cert_ca_dir, 'etcd.crt') | ansible.builtin.path_join }}"
+      mode: "0644"
     - label: etcd client certificate
       src: "{{ (etcd_cert_entity_local_dir, 'client.crt') | ansible.builtin.path_join }}"
       dest: "{{ (kubernetes_api_server_config_cert_entity_dir, 'etcd.crt') | ansible.builtin.path_join }}"

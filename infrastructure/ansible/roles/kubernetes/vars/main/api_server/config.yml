@@ -13,3 +13,6 @@ kubernetes_api_server_config_cert_entity_dir: "{{ (kubernetes_api_server_config_
 
 # Path to the Kubernetes API server service binary.
 kubernetes_api_server_config_service_binary_file: "{{ (kubernetes_install_binaries_archive_extract_dir, 'kube-apiserver') | ansible.builtin.path_join }}"
+
+# Path to the Kubernetes API server local configuration directory.
+kubernetes_api_server_config_local_dir: "{{ role_path }}/../kubernetes/files/api_server/config/{{ inventory_dir | ansible.builtin.basename }}"

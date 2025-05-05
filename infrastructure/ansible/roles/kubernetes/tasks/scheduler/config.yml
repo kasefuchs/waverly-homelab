@@ -3,12 +3,6 @@
   loop:
     - path: "{{ kubernetes_scheduler_config_dir }}"
       mode: "0755"
-    - path: "{{ kubernetes_scheduler_config_cert_dir }}"
-      mode: "0755"
-    - path: "{{ kubernetes_scheduler_config_cert_ca_dir }}"
-      mode: "0755"
-    - path: "{{ kubernetes_scheduler_config_cert_entity_dir }}"
-      mode: "0700"
   loop_control:
     label: "{{ item.path }}"
   ansible.builtin.file:
@@ -18,30 +12,9 @@
     owner: root
     group: root
 
-- name: Copy scheduler certificates
-  loop:
-    - label: Kubernetes CA certificate
-      src: "{{ (kubernetes_cert_ca_local_dir, 'ca.crt') | ansible.builtin.path_join }}"
-      dest: "{{ (kubernetes_scheduler_config_cert_ca_dir, 'kubernetes.crt') | ansible.builtin.path_join }}"
-      mode: "0644"
-    - label: Kubernetes scheduler certificate
-      src: "{{ (kubernetes_scheduler_cert_entity_local_dir, inventory_hostname, 'scheduler.crt') | ansible.builtin.path_join }}"
-      dest: "{{ (kubernetes_scheduler_config_cert_entity_dir, 'scheduler.crt') | ansible.builtin.path_join }}"
-      mode: "0644"
-    - label: Kubernetes scheduler private key
-      src: "{{ (kubernetes_scheduler_cert_entity_local_dir, inventory_hostname, 'scheduler.key') | ansible.builtin.path_join }}"
-      dest: "{{ (kubernetes_scheduler_config_cert_entity_dir, 'scheduler.key') | ansible.builtin.path_join }}"
-      mode: "0600"
-  loop_control:
-    label: "{{ item.label }}"
-  ansible.builtin.copy:
-    src: "{{ item.src }}"
-    dest: "{{ item.dest }}"
-    mode: "{{ item.mode }}"
-    owner: root
-    group: root
-
-- name: Create Kubernetes scheduler Kubeconfig
+- name: Create Kubernetes scheduler temporary Kubeconfig
+  become: false
+  delegate_to: localhost
   block:
     - name: Create temporary file
       register: kubernetes_scheduler_config_tempfile
@@ -61,8 +34,9 @@
               - config
               - set-cluster
               - default
+              - --embed-certs
               - --server={{ kubernetes_scheduler_config_server }}
-              - --certificate-authority={{ (kubernetes_scheduler_config_cert_ca_dir, 'kubernetes.crt') | ansible.builtin.path_join }}
+              - --certificate-authority={{ (kubernetes_cert_ca_local_dir, 'ca.crt') | ansible.builtin.path_join }}
 
         - name: Set credentials for Kubernetes scheduler
           changed_when: false
@@ -72,8 +46,9 @@
               - config
               - set-credentials
               - scheduler
-              - --client-key={{ (kubernetes_scheduler_config_cert_entity_dir, 'scheduler.key') | ansible.builtin.path_join }}
-              - --client-certificate={{ (kubernetes_scheduler_config_cert_entity_dir, 'scheduler.crt') | ansible.builtin.path_join }}
+              - --embed-certs
+              - --client-key={{ (kubernetes_scheduler_cert_entity_local_dir, inventory_hostname, 'scheduler.key') | ansible.builtin.path_join }}
+              - --client-certificate={{ (kubernetes_scheduler_cert_entity_local_dir, inventory_hostname, 'scheduler.crt') | ansible.builtin.path_join }}
 
         - name: Set context for Kubernetes scheduler
           changed_when: false
@@ -95,20 +70,20 @@
               - use-context
               - default
 
-    - name: Write Kubeconfig for Kubernetes scheduler
-      ansible.builtin.copy:
-        src: "{{ kubernetes_scheduler_config_tempfile.path }}"
-        dest: "{{ kubernetes_scheduler_config_kubeconfig_path }}"
-        mode: "0644"
-        owner: root
-        group: root
-        remote_src: true
-
-    - name: Delete temporary Kubeconfig for Kubernetes scheduler
-      changed_when: false
-      ansible.builtin.file:
-        path: "{{ kubernetes_scheduler_config_tempfile.path }}"
-        state: absent
+- name: Copy scheduler files
+  loop:
+    - label: Kubeconfig
+      src: "{{ kubernetes_scheduler_config_tempfile.path }}"
+      dest: "{{ kubernetes_scheduler_config_kubeconfig_path }}"
+      mode: "0600"
+  loop_control:
+    label: "{{ item.label }}"
+  ansible.builtin.copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: "{{ item.mode }}"
+    owner: root
+    group: root
 
 - name: Render config for Kubernetes scheduler
   ansible.builtin.template:

@@ -10,6 +10,7 @@ __pycache__/
 inventories/
 **/files/**/cert/
 **/files/**/download/
+**/files/**/config/**/*.kubeconfig
 
 # IDE
 .idea/

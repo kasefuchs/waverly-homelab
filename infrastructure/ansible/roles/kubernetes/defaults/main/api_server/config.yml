@@ -1,4 +1,7 @@
 ---
+# Kubernetes admin Kubeconfig server address.
+kubernetes_api_server_config_admin_server: "https://{{ nebula_cert_entity_host_ip | ansible.utils.ipaddr('address') }}:6443"
+
 # Kubernetes API server configuration flags.
 kubernetes_api_server_config_flags:
   --advertise-address={{ nebula_cert_entity_host_ip | ansible.utils.ipaddr('address') }}
